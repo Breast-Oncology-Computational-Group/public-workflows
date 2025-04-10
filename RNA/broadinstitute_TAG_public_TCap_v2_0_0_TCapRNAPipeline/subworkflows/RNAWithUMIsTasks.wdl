@@ -721,7 +721,6 @@ task formatPipelineOutputs {
     String picard_quality_distribution_pdf
     String? picard_fingerprint_summary_metrics
     String? picard_fingerprint_detail_metrics
-    File unified_metrics
     Float contamination
     Float contamination_error
     String fastqc_html_report
@@ -769,11 +768,6 @@ task formatPipelineOutputs {
     outputs_dict["contamination"]="~{contamination}"
     outputs_dict["contamination_error"]="~{contamination_error}"
 
-    # explode unified metrics file
-    with open("~{unified_metrics}", "r") as infile:
-      for row in infile:
-        key, value = row.rstrip("\n").split("\t")
-        outputs_dict[key] = value
 
     # write full outputs to file
     with open("~{outputs_json_file_name}", 'w') as outputs_file:
