@@ -1,0 +1,13 @@
+version: 1.2
+workflows:
+  - name: BroadInternalRNAWithUMIs_RemovedFingerprint
+    subclass: WDL
+    primaryDescriptorPath: /RNA/broadinstitute_TAG_public_TCap_v2_0_0_TCapRNAPipeline/BroadInternalRNAWithUMIs.wdl
+    testParameterFiles:
+      - /RNA/broadinstitute_TAG_public_TCap_v2_0_0_TCapRNAPipeline/BroadInternalRNAWithUMIs.inputs.json
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+    topic: RNA-seq
+    readMePath: /RNA/broadinstitute_TAG_public_TCap_v2_0_0_TCapRNAPipeline/README.md
