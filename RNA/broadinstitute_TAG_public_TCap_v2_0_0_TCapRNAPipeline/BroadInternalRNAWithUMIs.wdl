@@ -28,7 +28,7 @@ workflow BroadInternalRNAWithUMIs {
     String sequencing_center = "BI"
 
     # Terra Data Repo dataset information
-    String? tdr_dataset_uuid
+    String? namespace_workspace
     String? tdr_sample_id
 
     String environment
@@ -98,7 +98,7 @@ workflow BroadInternalRNAWithUMIs {
 
 
 
-  if (defined(tdr_dataset_uuid) && defined(tdr_sample_id)) {
+  if (defined(namespace_workspace && defined(tdr_sample_id)) {
     call tasks.formatPipelineOutputs {
       input:
         sample_id = select_first([tdr_sample_id, ""]),
@@ -130,7 +130,7 @@ workflow BroadInternalRNAWithUMIs {
 
     call tasks.updateOutputsInTDR {
       input:
-        tdr_dataset_uuid = select_first([tdr_dataset_uuid, ""]),
+        namespace_workspace = namespace_workspace,
         outputs_json = formatPipelineOutputs.pipeline_outputs_json
     }
   }

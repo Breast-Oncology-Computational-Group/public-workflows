@@ -793,8 +793,9 @@ task formatPipelineOutputs {
 
 task updateOutputsInTDR {
   input {
-    String tdr_dataset_uuid
+    String namespace_workspace
     File outputs_json
+    String table_name = "sample"
 
     Int cpu = 1
     Int memory_mb = 2000
@@ -802,21 +803,15 @@ task updateOutputsInTDR {
   }
 
   command <<<
-    # input args:
-    # -d dataset uuid
-    # -t target table in dataset
-    # -o json of data to ingest
-    # -f field to populate with timestamp at ingest (can have multiple)
-    python -u /scripts/export_pipeline_outputs_to_tdr.py \
-      -d "~{tdr_dataset_uuid}" \
-      -t "sample" \
-      -o "~{outputs_json}" \
-      -f "version_timestamp" \
-      -f "analysis_end_time"
+
+    python -u /scripts/update_terra_table.py \
+    --json_file ~{outputs_json} \
+    --namespace_workspace ~{namespace_workspace} \
+    --table_name ~{table_name}
   >>>
 
   runtime {
-    docker: "broadinstitute/horsefish:tdr_import_v1.4"
+    docker: "jingxin/update_terra_table:0.1"
     cpu: cpu
     memory: "~{memory_mb} MiB"
     disks: "local-disk ~{disk_size_gb} HDD"
