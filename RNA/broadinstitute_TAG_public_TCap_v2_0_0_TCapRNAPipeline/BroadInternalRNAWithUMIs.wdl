@@ -98,7 +98,7 @@ workflow BroadInternalRNAWithUMIs {
 
 
 
-  if (defined(namespace_workspace && defined(tdr_sample_id)) {
+  if (defined(namespace_workspace) && defined(tdr_sample_id)) {
     call tasks.formatPipelineOutputs {
       input:
         sample_id = select_first([tdr_sample_id, ""]),
