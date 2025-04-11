@@ -6,6 +6,7 @@ import argparse
 def update_table(sample_sheet,namespace_workspace):
     namespace = namespace_workspace.split("/")[0]
     workspace = namespace_workspace.split("/")[1]
+    print(namespace,workspace)
     new_table = sample_sheet.to_csv(sep="\t")
     fapi.upload_entities(
         namespace, workspace,  new_table, "flexible"
@@ -25,8 +26,8 @@ def main():
     parser.add_argument("--table_name", type=str, required=True)
     args = parser.parse_args()
     df = convert_json_to_df(args.json_file,args.table_name)
-    print(df)
     update_table(df,args.namespace_workspace)
+    df.to_csv('metrics_table.tsv',index=True,sep="\t")
 
 if __name__ == "__main__":
     main()

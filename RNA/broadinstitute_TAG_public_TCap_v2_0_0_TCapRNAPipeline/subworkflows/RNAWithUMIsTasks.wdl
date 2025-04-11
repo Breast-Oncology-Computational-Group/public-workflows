@@ -819,6 +819,7 @@ task updateOutputsInTDR {
 
   output {
     File ingest_logs = stdout()
+    File metrics_table = "metrics_table.tsv"
   }
 }
 
