@@ -130,7 +130,7 @@ workflow BroadInternalRNAWithUMIs {
 
     call tasks.updateOutputsInTDR {
       input:
-        namespace_workspace = namespace_workspace,
+        namespace_workspace = select_first([namespace_workspace, ""]),
         outputs_json = formatPipelineOutputs.pipeline_outputs_json
     }
   }
