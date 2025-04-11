@@ -768,7 +768,7 @@ task formatPipelineOutputs {
     outputs_dict["fastqc_percent_reads_with_adapter"]="~{fastqc_percent_reads_with_adapter}"
     outputs_dict["contamination"]="~{contamination}"
     outputs_dict["contamination_error"]="~{contamination_error}"
-    
+
     # explode unified metrics file
     with open("~{unified_metrics}", "r") as infile:
       for row in infile:
@@ -825,7 +825,6 @@ task updateOutputsInTDR {
 
   output {
     File ingest_logs = stdout()
-    File metrics_table = "metrics_table.tsv"
   }
 }
 

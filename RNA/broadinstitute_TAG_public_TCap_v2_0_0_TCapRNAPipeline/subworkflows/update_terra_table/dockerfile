@@ -1,4 +1,3 @@
 FROM broadinstitute/horsefish:tdr_import_v1.4
 COPY update_terra_table.py /scripts/update_terra_table.py
-COPY test_json_file.json /scripts/test_json_file.json
 
