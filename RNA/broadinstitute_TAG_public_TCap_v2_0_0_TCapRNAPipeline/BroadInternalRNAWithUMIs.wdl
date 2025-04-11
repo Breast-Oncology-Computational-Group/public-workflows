@@ -97,7 +97,15 @@ workflow BroadInternalRNAWithUMIs {
   }
 
 
-
+  call tasks.MergeMetrics {
+    input:
+      alignment_summary_metrics = RNAWithUMIs.picard_alignment_summary_metrics,
+      insert_size_metrics = RNAWithUMIs.picard_insert_size_metrics,
+      picard_rna_metrics = RNAWithUMIs.picard_rna_metrics,
+      duplicate_metrics = RNAWithUMIs.duplicate_metrics,
+      rnaseqc2_metrics = RNAWithUMIs.rnaseqc2_metrics,
+      output_basename = RNAWithUMIs.sample_name
+  }
   if (defined(namespace_workspace) && defined(tdr_sample_id)) {
     call tasks.formatPipelineOutputs {
       input:
@@ -122,6 +130,7 @@ workflow BroadInternalRNAWithUMIs {
         picard_quality_by_cycle_pdf = RNAWithUMIs.picard_quality_by_cycle_pdf,
         picard_quality_distribution_metrics = RNAWithUMIs.picard_quality_distribution_metrics,
         picard_quality_distribution_pdf = RNAWithUMIs.picard_quality_distribution_pdf,
+        unified_metrics = MergeMetrics.unified_metrics,
         contamination = RNAWithUMIs.contamination,
         contamination_error = RNAWithUMIs.contamination_error,
         fastqc_html_report = RNAWithUMIs.fastqc_html_report,
