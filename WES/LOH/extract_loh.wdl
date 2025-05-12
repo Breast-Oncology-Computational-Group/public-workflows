@@ -1,3 +1,5 @@
+version 1.0
+
 workflow extract_loh {
     input {
         File gene_cn_file
