@@ -14,9 +14,9 @@ workflows:
  
   - name: Extract_LOH_from_ABSOLUTE_output
     subclass: WDL
-    primaryDescriptorPath: /WES/LOH/loh_extraction.wdl
+    primaryDescriptorPath: /WES/LOH/extract_loh.wdl
     testParameterFiles:
-      - /WES/LOH/loh_extraction.inputs.json
+      - /WES/LOH/extract_loh.inputs.json
     authors:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
