@@ -6,22 +6,24 @@ workflow extract_loh {
         String docker_image="docker.io/jingxinfu/wes-utils:latest"
     }
     call loh_extraction {
-        input:
+        input {
             gene_cn_file = gene_cn_file,
             docker_image = docker_image
-    }
-    output {
-        File loh_file = loh_extraction.loh_file
+        }
+        output {
+            File loh_file = loh_extraction.loh_file
+        }
     }
 }
 
 task loh_extraction {
-    input:
+    input {
         File gene_cn_file,
         String docker_image
         Int memory = 10
         Int cpu = 4
         Int disk = 10
+    }
     command {
         python /scripts/loh_extraction.py -i ${gene_cn_file} -o loh.tsv
     }
