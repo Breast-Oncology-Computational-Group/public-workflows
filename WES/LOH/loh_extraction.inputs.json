@@ -1,0 +1,3 @@
+{
+	"extract_loh.gene_cn_file": "${this.gene_cn_file}"
+}

@@ -11,3 +11,15 @@ workflows:
         affiliation: DFCI-BOC
     topic: RNA-seq
     readMePath: /RNA/broadinstitute_TAG_public_TCap_v2_0_0_TCapRNAPipeline/README.md
+ 
+  - name: Extract_LOH_from_ABSOLUTE_output
+    subclass: WDL
+    primaryDescriptorPath: /WES/LOH/loh_extraction.wdl
+    testParameterFiles:
+      - /WES/LOH/loh_extraction.inputs.json
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+    topic: WES
+    readMePath: /WES/LOH/README.md
