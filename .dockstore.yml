@@ -33,3 +33,13 @@ workflows:
         affiliation: DFCI-BOC
     topic: Utils
     readMePath: /Utils/README.md
+
+  - name: Gene_CN_Uniform_Category
+    subclass: WDL
+    primaryDescriptorPath: /WES/Gene_CN_Uniform_Category.wdl
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+    topic: WES
+    readMePath: /WES/README.md
