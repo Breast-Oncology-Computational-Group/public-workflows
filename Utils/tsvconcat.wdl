@@ -29,8 +29,7 @@ task concat_task {
        import os
        
        dfs = []
-       for file in "${sep='", "' tsv_files}".split('", "'):
-           file = file.strip('"')
+       for file in "${sep=',' tsv_files}".split(','):
            if os.path.exists(file):
                df = pl.read_csv(file, separator="\t")
                if not df.is_empty():
