@@ -56,10 +56,10 @@ task cnv_uniform_category {
         gene_cn = gene_cn.loc[~gene_cn['Variant_Classification'].isin([
             "GAIN","Possible_biallelic_inactivation","Likely_biallelic_inactivation"]),
                           :]
-        gene_cn.rename(columns={
-            'gene':'category',
-            'Variant_Classification':'value'
-        })[['sample','category','value']].drop_duplicates().to_csv('cnv_uniform_class.tsv', index=False)
+        gene_cn = gene_cn[['sample','gene','Variant_Classification']]
+        gene_cn.columns = ['sample','category','value']
+        gene_cn.to_csv('cnv_uniform_class.tsv', index=False)
+        
         CODE
     }
     output {
