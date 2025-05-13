@@ -25,19 +25,19 @@ task concat_task {
     }
     command {
        python <<CODE
-       import polars as pl
+       import pandas as pd
        import os
        
        dfs = []
        for file in "${sep=',' tsv_files}".split(','):
            if os.path.exists(file):
-               df = pl.read_csv(file, separator="\t")
-               if not df.is_empty():
+               df = pd.read_csv(file, sep="\t", encoding="latin1") # for some character encoding issues in MAF files
+               if not df.empty:
                    dfs.append(df)
        
        if dfs:
-           combined_df = pl.concat(dfs)
-           combined_df.write_csv('output.tsv', separator="\t")
+           combined_df = pd.concat(dfs)
+           combined_df.to_csv('output.tsv', sep="\t", index=False)
        else:
            # Create empty file if no valid data
            with open('output.tsv', 'w') as f:
