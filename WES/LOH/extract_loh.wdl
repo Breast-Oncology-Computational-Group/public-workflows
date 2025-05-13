@@ -3,7 +3,7 @@ version 1.0
 workflow extract_loh {
     input {
         File gene_cn_file
-        String docker_image="docker.io/jingxinfu/wes-utils:0.1"
+        String docker_image="jingxin/wes-utils:0.1"
     }
     call loh_extraction {
         input:
