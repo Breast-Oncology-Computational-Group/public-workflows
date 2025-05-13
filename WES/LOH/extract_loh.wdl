@@ -3,7 +3,7 @@ version 1.0
 workflow extract_loh {
     input {
         File gene_cn_file
-        String docker_image="jingxin/wes_utils:0.1"
+        String docker_image="us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/terrautils:0.1"
     }
     call loh_extraction {
         input:
@@ -20,9 +20,9 @@ task loh_extraction {
     input {
         File gene_cn_file
         String docker_image
-        Int memory = 10
-        Int cpu = 4
-        Int disk = 10
+        Int memory = 4
+        Int cpu = 1
+        Int disk = 8
     }
     command {
         python /scripts/loh_extraction.py -i ${gene_cn_file} -o loh.tsv
@@ -34,6 +34,6 @@ task loh_extraction {
         docker: "${docker_image}"
         memory: "${memory}G"
         cpu: "${cpu}"
-        disk: "${disk}G"
+        disk: "local-disk " + disk + " HDD"
     }
 }

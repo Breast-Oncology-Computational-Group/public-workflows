@@ -1,3 +1,6 @@
+# -- coding: utf-8 --
+#! /usr/bin/env python3
+
 import polars as pl
 import argparse
 def extract_loh(gene_cn_file):
@@ -8,11 +11,11 @@ def extract_loh(gene_cn_file):
     assert all(df['expected.a2'] >= df['expected.a1']), "expected.a2 (greater CN) should be greater than expected.a1 (lesser CN)"
 
     df = df.with_columns(
-        pl.when(pl.col("LOH")==0).then('N'
+        pl.when(pl.col("LOH")==0).then(pl.lit('N')
         ).otherwise(
-            pl.when((pl.col("expected.a1").round(0)==0) & (pl.col("corrected_total_cn").round(0)==1)).then('CL-LOH')
-            .when((pl.col("expected.a1").round(0)==0) & (pl.col("corrected_total_cn").round(0)==2)).then('CN-LOH')
-            .when((pl.col("expected.a1").round(0)==0) & (pl.col("corrected_total_cn").round(0)>2)).then('LOH(Other)')
+            pl.when((pl.col("expected.a1").round(0)==0) & (pl.col("corrected_total_cn").round(0)==1)).then(pl.lit('CL-LOH'))
+            .when((pl.col("expected.a1").round(0)==0) & (pl.col("corrected_total_cn").round(0)==2)).then(pl.lit('CN-LOH'))
+            .when((pl.col("expected.a1").round(0)==0) & (pl.col("corrected_total_cn").round(0)>2)).then(pl.lit('LOH(Other)'))
         ).alias("LOH_type")
     ).filter(pl.col("LOH_type") != 'N')
 
