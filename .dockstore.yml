@@ -23,3 +23,13 @@ workflows:
         affiliation: DFCI-BOC
     topic: WES
     readMePath: /WES/LOH/README.md
+
+  - name: TSVConcat
+    subclass: WDL
+    primaryDescriptorPath: /Utils/tsvconcat.wdl
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+    topic: Utils
+    readMePath: /Utils/README.md
