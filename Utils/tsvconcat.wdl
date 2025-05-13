@@ -11,7 +11,7 @@ workflow tsvconcat {
     }
     
     output {
-        File output = concat_task.output
+        File concat_tsv = concat_task.concat_tsv
     }
 }
 
@@ -46,7 +46,7 @@ task concat_task {
        CODE
     }
     output {
-        File output = "output.tsv"
+        File concat_tsv = "output.tsv"
     }
     runtime {
         docker: "${docker_image}"
