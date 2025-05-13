@@ -18,7 +18,7 @@ workflow extract_loh {
 
 task loh_extraction {
     input {
-        File gene_cn_file,
+        File gene_cn_file
         String docker_image
         Int memory = 10
         Int cpu = 4
