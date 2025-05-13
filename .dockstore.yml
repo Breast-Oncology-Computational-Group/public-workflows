@@ -16,7 +16,7 @@ workflows:
     subclass: WDL
     primaryDescriptorPath: /WES/LOH/extract_loh.wdl
     testParameterFiles:
-      - /WES/LOH/extract_loh.inputs.json
+      - /WES/LOH/extract_loh.json
     authors:
       - name: jingxin fu
         email: jingxin@broadinstitute.org

@@ -1,17 +1,21 @@
+version 1.0
+
 workflow tsvconcat {
     input {
         Array[File] tsv_files
     }
-    call tsvconcat {
+
+    call concat_task {
         input:
             tsv_files = tsv_files
     }
+    
     output {
-        File output = tsvconcat.output
+        File output = concat_task.output
     }
 }
 
-task tsvconcat {
+task concat_task {
     input {
         Array[File] tsv_files
         Int memory = 4
