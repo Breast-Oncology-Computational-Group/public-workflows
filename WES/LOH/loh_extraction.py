@@ -19,7 +19,7 @@ def extract_loh(gene_cn_file):
         ).alias("LOH_type")
     ).filter(pl.col("LOH_type") != 'N')
 
-    return df[['sample','gene', 'LOH_type']]
+    return df[['sample','gene', 'LOH_type']].unique()
 
     
 
