@@ -4,10 +4,12 @@ import "./utils.wdl" as utils
 
 workflow run_cellranger_count {
     input {
-        String gs_bucket_path
+        String input_gs_bucket_path
         String sample_name
         String zones = "us-central1-a"
     }
+    String gs_bucket_path= sub(input_gs_bucket_path, "/+$", "") # remove the trailing slash
+
     call cellranger_count {
         input:
             sample_name = sample_name,
@@ -33,7 +35,7 @@ workflow run_cellranger_count {
 
 task cellranger_count {
     input {
-        File fastq_dir
+        String fastq_dir # this path should be a directory that contains the fastq files
         File reference_dir
         File genome_dir
         String sample_name
@@ -64,12 +66,15 @@ task cellranger_count {
         Int diskGB = 500
     }
     command {
-        # untar the fastq_dir and reference_dir
-        mkdir -p fastq_dir
+        # untar the reference_dir
         mkdir -p reference_dir
-        tar -xf ~{fastq_dir} -C fastq_dir --strip-components 1
         tar -xf ~{reference_dir} -C reference_dir --strip-components 1
 
+        # localize the FASTQ files from the bucket to the container
+        mkdir -p fastq_dir
+        gsutil -q -m rsync -r ~{fastq_dir} fastq_dir
+
+        # run cellranger count  
         python <<CODE
         import subprocess
         cmd =  "cellranger count --id=sample --transcriptome=reference_dir --fastqs=fastq_dir --sample=~{sample_name} --chemistry=~{chemistry}"
@@ -99,7 +104,7 @@ task cellranger_count {
 
         CODE
 
-        gsutil -q -m rsync -d -r sample/outs gs://~{gs_bucket_path}/~{sample_name}/GEX
+        gsutil -q -m rsync -d -r sample/outs ~{gs_bucket_path}/~{sample_name}/GEX
     }
     output {
         Array[File] output_dir = glob("sample/outs/*")
