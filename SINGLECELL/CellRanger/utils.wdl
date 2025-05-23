@@ -1,0 +1,72 @@
+task format_cellranger_output {
+    input {
+        Array[File] output_dir
+        String gs_bucket_path
+        String tool_name
+        String sample_name
+        String zones = "us-central1-a"
+        String docker_image = "jingxin/update_terra_table:0.1"
+        Int cpu = 1
+        Int memory_mb = 2000
+        Int disk_size_gb = 10
+    }
+    command {
+        python <<CODE
+        import json
+        import os
+        # format the dictionary of output_dir
+        output_dict = dict()
+        for file in output_dir:
+            file_name = os.path.basename(file)
+            table_name = tool_name + "_" + file_name.split(".")[0]
+            output_dict[table_name] = "~{gs_bucket_path}/~{sample_name}/~{tool_name}/"+file_name
+        # save the output_dict to a json file
+        with open("output_dict.json", "w") as f:
+            json.dump(output_dict, f)
+        
+        CODE
+    }
+    output {
+        File output_dict = "output_dict.json"
+    }
+
+    runtime {
+        docker: docker_image
+        cpu: cpu
+        memory: "~{memory_mb} MiB"
+        disks: "local-disk ~{disk_size_gb} HDD"
+    }
+}
+
+
+task updateOutputsInTDR {
+  input {
+    String namespace_workspace
+    File outputs_json
+    String table_name = "sample"
+
+    String docker_image = "jingxin/update_terra_table:0.1"
+    Int cpu = 1
+    Int memory_mb = 2000
+    Int disk_size_gb = 10
+  }
+
+  command <<<
+
+    python -u /scripts/update_terra_table.py \
+    --json_file ~{outputs_json} \
+    --namespace_workspace ~{namespace_workspace} \
+    --table_name ~{table_name}
+  >>>
+
+  runtime {
+    docker: docker_image
+    cpu: cpu
+    memory: "~{memory_mb} MiB"
+    disks: "local-disk ~{disk_size_gb} HDD"
+  }
+
+  output {
+    File ingest_logs = stdout()
+  }
+}

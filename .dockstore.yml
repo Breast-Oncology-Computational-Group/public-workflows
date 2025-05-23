@@ -43,3 +43,13 @@ workflows:
         affiliation: DFCI-BOC
     topic: WES
     readMePath: /WES/README.md
+
+  - name: CellRanger_count
+    subclass: WDL
+    primaryDescriptorPath: /SINGLECELL/CellRanger/count.wdl
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+    topic: SINGLECELL
+    readMePath: /SINGLECELL/CellRanger/README.md
