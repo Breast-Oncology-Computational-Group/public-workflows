@@ -1,3 +1,6 @@
+version 1.0
+
+
 task format_cellranger_output {
     input {
         Array[File] output_dir
