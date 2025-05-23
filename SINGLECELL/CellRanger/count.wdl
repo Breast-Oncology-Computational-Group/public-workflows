@@ -70,23 +70,34 @@ task cellranger_count {
         tar -xf ~{fastq_dir} -C fastq_dir --strip-components 1
         tar -xf ~{reference_dir} -C reference_dir --strip-components 1
 
-        # run cellranger count
-        cellranger count \
-        --id=sample \
-        --transcriptome=reference_dir \
-        --fastqs=fastq_dir \
-        --sample=~{sample_name} \
-        --chemistry=~{chemistry} \
-        ~{if include_introns then "--include-introns" else ""} \
-        ~{if no_bam then "--no-bam" else ""} \
-        ~{if no_secondary then "--no-secondary" else ""} \
-        ~{--libraries libraries} \
-        ~{--force_cells force_cells} \
-        ~{--expected_cells expected_cells} \
-        ~{--target_panel target_panel} \
-        ~{--r1_length r1_length} \
-        ~{--r2_length r2_length} \
-        ~{--feature_ref feature_ref} \
+        python <<CODE
+        import subprocess
+        cmd =  "cellranger count --id=sample --transcriptome=reference_dir --fastqs=fastq_dir --sample=~{sample_name} --chemistry=~{chemistry}"
+        if ~{include_introns}:
+            cmd += " --include-introns"
+        if ~{no_bam}:
+            cmd += " --no-bam"
+        if ~{no_secondary}:
+            cmd += " --no-secondary"
+        if ~{libraries}:
+            cmd += " --libraries ~{libraries}"
+        if ~{force_cells}:
+            cmd += " --force-cells ~{force_cells}"
+        if ~{expected_cells}:
+            cmd += " --expected-cells ~{expected_cells}"
+        if ~{target_panel}:
+            cmd += " --target-panel ~{target_panel}"
+        if ~{r1_length}:
+            cmd += " --r1-length ~{r1_length}"
+        if ~{r2_length}:
+            cmd += " --r2-length ~{r2_length}"
+        if ~{feature_ref}:
+            cmd += " --feature-ref ~{feature_ref}"
+
+        print(cmd)
+        subprocess.run(cmd, shell=True)
+
+        CODE
 
         gsutil -q -m rsync -d -r sample/outs gs://~{gs_bucket_path}/~{sample_name}/GEX
     }
