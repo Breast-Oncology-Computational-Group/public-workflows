@@ -37,7 +37,6 @@ task cellranger_count {
     input {
         String fastq_dir # this path should be a directory that contains the fastq files
         File reference_dir
-        File genome_dir
         String sample_name
         String chemistry
 
