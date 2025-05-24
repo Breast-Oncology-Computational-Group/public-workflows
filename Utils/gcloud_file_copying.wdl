@@ -15,6 +15,7 @@ task gcloud_file_copying {
         Int memoryGB = 1
         Int cpu = 1
         Int diskGB = 1
+        String zone = "us-central1-a"
     }
     command {
         gsutil cp ~{source_file_path} ~{destination_file_path} > gcloud_file_copying.log
@@ -23,6 +24,7 @@ task gcloud_file_copying {
         File log = "gcloud_file_copying.log"
     }
     runtime {
+        zone: "${zone}"
         docker: "${docker_image}"
         memory: "${memoryGB}G"
         cpu: "${cpu}"
