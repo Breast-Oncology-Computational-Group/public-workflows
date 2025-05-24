@@ -87,7 +87,7 @@ task cellranger_count {
         if '~{no_bam}' == 'true':
             cmd += " --no-bam"
         if '~{no_secondary}' == 'true':
-            cmd += " --no-secondary"
+            cmd += " --nosecondary"
         if '~{libraries}' != '':
             cmd += " --libraries=~{libraries}"
         if '~{force_cells}' != '':
