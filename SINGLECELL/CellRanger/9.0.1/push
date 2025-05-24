@@ -1,3 +1,3 @@
-docker build -t cellranger-9.0.1 .
+docker build --platform linux/arm64 -t cellranger-9.0.1 .
 docker tag cellranger-9.0.1 us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/cellranger-9.0.1
 docker push  us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/cellranger-9.0.1

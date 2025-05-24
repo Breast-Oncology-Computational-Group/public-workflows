@@ -65,7 +65,7 @@ task cellranger_count {
         # runtime
         String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/cellranger-9.0.1"
         String zones = "us-central1-a"
-        Int memoryGB = 120
+        String memory = "60G"
         Int cpu = 32
         Int diskGB = 500
     }
@@ -116,7 +116,8 @@ task cellranger_count {
     runtime {
         docker: docker_image
         zones: zones
-        memory: "~{memoryGB} GB"
+        memory: memory
+        bootDiskSizeGb: 12
         cpu: cpu
         disks: "local-disk ~{diskGB} HDD"
     }
