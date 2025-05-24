@@ -21,7 +21,7 @@ task format_cellranger_output {
         output_dict = dict()
         for file in output_dir:
             file_name = os.path.basename(file)
-            table_name = tool_name + "_" + file_name.split(".")[0]
+            table_name = tool_name + "_" + file_name.replace(".", "_")
             output_dict[table_name] = "~{gs_bucket_path}/~{sample_name}/~{tool_name}/"+file_name
         # save the output_dict to a json file
         with open("output_dict.json", "w") as f:
