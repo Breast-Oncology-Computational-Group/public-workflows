@@ -2,6 +2,9 @@ version 1.0
 
 workflow run_gcloud_file_copying {
     call gcloud_file_copying {}
+    output {
+        File log = gcloud_file_copying.log
+    }
 }
 
 task gcloud_file_copying {
@@ -14,7 +17,10 @@ task gcloud_file_copying {
         Int diskGB = 1
     }
     command {
-        gsutil cp ~{source_file_path} ~{destination_file_path}
+        gsutil cp ~{source_file_path} ~{destination_file_path} > gcloud_file_copying.log
+    }
+    output {
+        File log = "gcloud_file_copying.log"
     }
     runtime {
         docker: "${docker_image}"
