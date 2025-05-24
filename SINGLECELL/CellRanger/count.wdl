@@ -118,6 +118,6 @@ task cellranger_count {
         zones: zones
         memory: "~{memoryGB} GB"
         cpu: cpu
-        disk: "~{diskGB} GB"
+        disks: "local-disk ~{diskGB} HDD"
     }
 }

@@ -51,6 +51,6 @@ task concat_task {
         docker: "${docker_image}"
         memory: "${memory}G"
         cpu: "${cpu}"
-        disk: "local-disk " + disk + " HDD"
+        disks: "local-disk " + disk + " HDD"
     }
 }

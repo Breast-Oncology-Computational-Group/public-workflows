@@ -28,7 +28,7 @@ task gcloud_file_copying {
         docker: "${docker_image}"
         memory: "${memoryGB}G"
         cpu: "${cpu}"
-        disk: "local-disk " + diskGB + " HDD"
+        disks: "local-disk " + diskGB + " HDD"
     }
 
 }
