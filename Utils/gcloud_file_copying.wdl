@@ -1,0 +1,26 @@
+version 1.0
+
+workflow run_gcloud_file_copying {
+    call gcloud_file_copying {}
+}
+
+task gcloud_file_copying {
+    input {
+        String source_file_path
+        String destination_file_path
+        String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/terrautils:0.1"
+        Int memoryGB = 1
+        Int cpu = 1
+        Int diskGB = 1
+    }
+    command {
+        gsutil cp ~{source_file_path} ~{destination_file_path}
+    }
+    runtime {
+        docker: "${docker_image}"
+        memory: "${memoryGB}G"
+        cpu: "${cpu}"
+        disk: "local-disk " + diskGB + " HDD"
+    }
+
+}

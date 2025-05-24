@@ -44,6 +44,16 @@ workflows:
     topic: WES
     readMePath: /WES/README.md
 
+  - name: Gcloud_file_copying
+    subclass: WDL
+    primaryDescriptorPath: /Utils/gcloud_file_copying.wdl
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+    topic: Utils
+    readMePath: /Utils/README.md
+
   - name: CellRanger_count
     subclass: WDL
     primaryDescriptorPath: /SINGLECELL/CellRanger/count.wdl
