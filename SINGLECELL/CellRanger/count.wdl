@@ -27,9 +27,13 @@ workflow run_cellranger_count {
             zones = zones,
     }
 
-    call utils.updateOutputsInTDR {
+    call utils.updateOutputsInTDR  as update_outputs_in_tdr {
         input:
             outputs_json = format_output.output_dict,
+    }
+    output {
+        File cellranger_count_output_json = format_output.output_dict
+        File cellranger_count_ingest_logs = update_outputs_in_tdr.ingest_logs
     }
 
 }
