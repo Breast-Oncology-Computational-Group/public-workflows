@@ -33,8 +33,8 @@ workflow run_cellranger_arc_count {
             outputs_json = format_output.output_dict,
     }
     output {
-        File cellranger_atac_count_output_json = format_output.output_dict
-        File cellranger_atac_count_ingest_logs = update_outputs_in_terra_table.ingest_logs
+        File cellranger_arc_count_output_json = format_output.output_dict
+        File cellranger_arc_count_ingest_logs = update_outputs_in_terra_table.ingest_logs
     }
 
 }
