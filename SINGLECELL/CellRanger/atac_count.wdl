@@ -9,21 +9,20 @@ workflow run_cellranger_atac_count {
         String cohort_name
         String zones = "us-central1-a"
     }
-    String gs_bucket_path= sub(input_gs_bucket_path, "/+$", "") + "/" + cohort_name # remove the trailing slash and add the cohort name
+    String gs_bucket_path= sub(input_gs_bucket_path, "/+$", "") + "/" + cohort_name + "/" + sample_name + "/ATAC"  # remove the trailing slash and add the cohort name and sample name
 
     call cellranger_atac_count {
         input:
             sample_name = sample_name,
             gs_bucket_path = gs_bucket_path,
-            zones = zones,
+            zones = zones
     }
 
     call utils.format_cellranger_output as format_output {
         input: 
             output_dir = cellranger_atac_count.output_dir,
             gs_bucket_path = gs_bucket_path,
-            sample_name = sample_name,
-            tool_name = "cellranger_atac_count",
+            tr_prefix_name = "cellranger_atac_count",
             zones = zones,
     }
 
@@ -56,7 +55,7 @@ task cellranger_atac_count {
         String gs_bucket_path
 
         # runtime
-        String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/cellranger-9.0.1"
+        String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/cellranger:9.0.1"
         String zones = "us-central1-a"
         String memory = "60G"
         Int cpu = 32
@@ -89,7 +88,7 @@ task cellranger_atac_count {
 
         CODE
 
-        gsutil -q -m rsync -d -r sample/outs ~{gs_bucket_path}/~{sample_name}/ATAC
+        gsutil -q -m rsync -d -r sample/outs ~{gs_bucket_path}
     }
     output {
         Array[File] output_dir = glob("sample/outs/*")

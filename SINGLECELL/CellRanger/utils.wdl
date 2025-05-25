@@ -5,8 +5,7 @@ task format_cellranger_output {
     input {
         Array[File] output_dir
         String gs_bucket_path
-        String tool_name
-        String sample_name
+        String tr_prefix_name
         String zones = "us-central1-a"
         String docker_image = "jingxin/update_terra_table:0.1"
         Int cpu = 1
@@ -19,10 +18,10 @@ task format_cellranger_output {
         import os
         # format the dictionary of output_dir
         output_dict = dict()
-        for file in output_dir:
+        for file in "${sep=',' output_dir}".split(','):
             file_name = os.path.basename(file)
-            table_name = tool_name + "_" + file_name.replace(".", "_")
-            output_dict[table_name] = "~{gs_bucket_path}/~{sample_name}/~{tool_name}/"+file_name
+            table_name = "~{tr_prefix_name}_" + file_name.replace(".", "_")
+            output_dict[table_name] = "~{gs_bucket_path}/"+file_name
         # save the output_dict to a json file
         with open("output_dict.json", "w") as f:
             json.dump(output_dict, f)
@@ -34,6 +33,7 @@ task format_cellranger_output {
     }
 
     runtime {
+        zones: zones
         docker: docker_image
         cpu: cpu
         memory: "~{memory_mb} MiB"

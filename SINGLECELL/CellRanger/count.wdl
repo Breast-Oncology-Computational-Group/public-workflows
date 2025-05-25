@@ -4,12 +4,12 @@ import "./utils.wdl" as utils
 
 workflow run_cellranger_count {
     input {
-        String input_gs_bucket_path
+        String output_gs_bucket_folder_path
         String sample_name
         String cohort_name
         String zones = "us-central1-a"
     }
-    String gs_bucket_path= sub(input_gs_bucket_path, "/+$", "") + "/" + cohort_name # remove the trailing slash and add the cohort name
+    String gs_bucket_path= sub(output_gs_bucket_folder_path, "/+$", "") + "/" + cohort_name "/" + sample_name + "/GEX"  # remove the trailing slash and add the cohort name and sample name
 
     call cellranger_count {
         input:
@@ -22,8 +22,7 @@ workflow run_cellranger_count {
         input: 
             output_dir = cellranger_count.output_dir,
             gs_bucket_path = gs_bucket_path,
-            sample_name = sample_name,
-            tool_name = "cellranger_count",
+            tr_prefix_name = "cellranger_count",
             zones = zones,
     }
 
@@ -102,7 +101,7 @@ task cellranger_count {
 
         CODE
 
-        gsutil -q -m rsync -d -r sample/outs ~{gs_bucket_path}/~{sample_name}/GEX
+        gsutil -q -m rsync -d -r sample/outs ~{gs_bucket_path}
     }
     output {
         Array[File] output_dir = glob("sample/outs/*")
