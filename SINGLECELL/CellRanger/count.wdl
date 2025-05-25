@@ -49,11 +49,6 @@ task cellranger_count {
         # optional parameters for cellranger count
         Int? force_cells
         Int? expected_cells
-        File? target_panel
-        Int? r1_length
-        Int? r2_length
-        File? libraries
-        File? feature_ref
         Boolean include_introns = true
         Boolean no_bam = false
         Boolean no_secondary = true
@@ -82,26 +77,25 @@ task cellranger_count {
         python <<CODE
         import subprocess
         cmd =  "cellranger count --id=sample --transcriptome=reference_dir --fastqs=fastq_dir --sample=~{sample_name} --chemistry=~{chemistry}"
+
         if '~{include_introns}' == 'true':
-            cmd += " --include-introns"
+            cmd += " --include-introns=true"
+        else:
+            cmd += " --include-introns=false"
+
         if '~{no_bam}' == 'true':
-            cmd += " --no-bam"
+            cmd += " --create-bam=false"
+        else:
+            cmd += " --create-bam=true"
+
         if '~{no_secondary}' == 'true':
             cmd += " --nosecondary"
-        if '~{libraries}' != '':
-            cmd += " --libraries=~{libraries}"
+
         if '~{force_cells}' != '':
             cmd += " --force-cells=~{force_cells}"
         if '~{expected_cells}' != '':
             cmd += " --expected-cells=~{expected_cells}"
-        if '~{target_panel}' != '':
-            cmd += " --target-panel=~{target_panel}"
-        if '~{r1_length}' != '':
-            cmd += " --r1-length=~{r1_length}"
-        if '~{r2_length}' != '':
-            cmd += " --r2-length=~{r2_length}"
-        if '~{feature_ref}' != '':
-            cmd += " --feature-ref=~{feature_ref}"
+
 
         print(cmd)
         subprocess.run(cmd, shell=True)
