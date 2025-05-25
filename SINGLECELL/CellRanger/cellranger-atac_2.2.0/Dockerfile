@@ -25,5 +25,5 @@ RUN apt-get -qq -y autoremove && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /var/log/dpkg.log
 
-ENV PATH=/software:/software/cellranger-atac-2.2.0:$PATH
+ENV PATH=/software/cellranger-atac-2.2.0:$PATH
 ENV TMPDIR=/tmp
