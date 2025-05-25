@@ -57,7 +57,7 @@ task cellranger_count {
         String gs_bucket_path
 
         # runtime
-        String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/cellranger-9.0.1"
+        String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/cellranger:9.0.1"
         String zones = "us-central1-a"
         String memory = "60G"
         Int cpu = 32
