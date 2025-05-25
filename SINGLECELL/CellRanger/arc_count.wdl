@@ -45,7 +45,6 @@ task cellranger_arc_count {
         String atac_fastq_dir # this path should be a directory that contains the fastq files for the ATAC data
         File reference_dir
         String sample_name
-        String chemistry
 
 
         # optional parameters for cellranger count
@@ -62,9 +61,9 @@ task cellranger_arc_count {
         # runtime
         String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/cellranger-arc:2.0.2"
         String zones = "us-central1-a"
-        String memory = "60G"
+        String memory = "160G"
         Int cpu = 64
-        Int diskGB = 500
+        Int diskGB = 700
     }
     command {
         # untar the reference_dir
