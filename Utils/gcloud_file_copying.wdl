@@ -18,10 +18,10 @@ task gcloud_file_copying {
         String zone = "us-central1-a"
     }
     command {
-        gsutil cp ~{source_file_path} ~{destination_file_path} > gcloud_file_copying.log
+        gsutil cp ~{source_file_path} ~{destination_file_path}
     }
     output {
-        File log = "gcloud_file_copying.log"
+        File log = stdout()
     }
     runtime {
         zone: "${zone}"

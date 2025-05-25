@@ -6,6 +6,7 @@ task format_cellranger_output {
         Array[File] output_dir
         String gs_bucket_path
         String tr_prefix_name
+        String sample_id
         String zones = "us-central1-a"
         String docker_image = "jingxin/update_terra_table:0.1"
         Int cpu = 1
@@ -22,6 +23,7 @@ task format_cellranger_output {
             file_name = os.path.basename(file)
             table_name = "~{tr_prefix_name}_" + file_name.replace(".", "_")
             output_dict[table_name] = "~{gs_bucket_path}/"+file_name
+        output_dict["sample_id"] = "~{sample_id}"
         # save the output_dict to a json file
         with open("output_dict.json", "w") as f:
             json.dump(output_dict, f)
@@ -42,7 +44,7 @@ task format_cellranger_output {
 }
 
 
-task updateOutputsInTDR {
+task updateOutputsInTerraTable {
   input {
     String namespace_workspace
     File outputs_json

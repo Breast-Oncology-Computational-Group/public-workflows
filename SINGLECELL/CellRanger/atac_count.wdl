@@ -5,8 +5,9 @@ import "./utils.wdl" as utils
 workflow run_cellranger_atac_count {
     input {
         String input_gs_bucket_path
-        String sample_name
-        String cohort_name
+        String sample_name # this the sample name in the FASTQ file. e.g. [sample_name]_R1_001.fastq.gz
+        String cohort_name 
+        String sample_id # this is the sample id in the Terra table
         String zones = "us-central1-a"
     }
     String gs_bucket_path= sub(input_gs_bucket_path, "/+$", "") + "/" + cohort_name + "/" + sample_name + "/ATAC"  # remove the trailing slash and add the cohort name and sample name
@@ -22,17 +23,18 @@ workflow run_cellranger_atac_count {
         input:
             output_dir = cellranger_atac_count.output_dir,
             gs_bucket_path = gs_bucket_path,
+            sample_id = sample_id,
             tr_prefix_name = "cellranger_atac_count",
             zones = zones,
     }
 
-    call utils.updateOutputsInTDR  as update_outputs_in_tdr {
+    call utils.updateOutputsInTerraTable  as update_outputs_in_terra_table {
         input:
             outputs_json = format_output.output_dict,
     }
     output {
         File cellranger_count_output_json = format_output.output_dict
-        File cellranger_count_ingest_logs = update_outputs_in_tdr.ingest_logs
+        File cellranger_count_ingest_logs = update_outputs_in_terra_table.ingest_logs
     }
 
 }
