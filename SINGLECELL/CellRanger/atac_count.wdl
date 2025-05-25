@@ -19,7 +19,7 @@ workflow run_cellranger_atac_count {
     }
 
     call utils.format_cellranger_output as format_output {
-        input: 
+        input:
             output_dir = cellranger_atac_count.output_dir,
             gs_bucket_path = gs_bucket_path,
             tr_prefix_name = "cellranger_atac_count",
@@ -55,10 +55,10 @@ task cellranger_atac_count {
         String gs_bucket_path
 
         # runtime
-        String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/cellranger:9.0.1"
+        String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/cellranger-atac:2.2.0"
         String zones = "us-central1-a"
         String memory = "60G"
-        Int cpu = 32
+        Int cpu = 64
         Int diskGB = 500
     }
     command {
