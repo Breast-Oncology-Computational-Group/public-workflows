@@ -79,11 +79,12 @@ task cellranger_arc_count {
 
         # run cellranger count
         python <<CODE
+        import os
         # create a libraries.csv file
         with open('libraries.csv', 'w') as f:
             f.write('fastqs,sample,library_type\n')
-            f.write('gex_fastq_dir,~{sample_name},Gene Expression\n')
-            f.write('atac_fastq_dir,~{sample_name},Chromatin Accessibility\n')
+            f.write(os.path.abspath('gex_fastq_dir')+',~{sample_name},Gene Expression\n')
+            f.write(os.path.abspath('atac_fastq_dir')+',~{sample_name},Chromatin Accessibility\n')
 
         import subprocess
         cmd =  "cellranger-arc count --id=sample --reference=reference_dir --libraries=libraries.csv"
