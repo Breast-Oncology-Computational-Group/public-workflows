@@ -75,7 +75,7 @@ task cellranger_atac_count {
         # run cellranger count  
         python <<CODE
         import subprocess
-        cmd =  "cellranger atac count --id=sample --transcriptome=reference_dir --fastqs=fastq_dir --sample=~{sample_name} --chemistry=~{chemistry}"
+        cmd =  "cellranger-atac count --id=sample --transcriptome=reference_dir --fastqs=fastq_dir --sample=~{sample_name} --chemistry=~{chemistry}"
 
         if '~{force_cells}' != '':
             cmd += " --force-cells=~{force_cells}"
