@@ -9,7 +9,7 @@ workflow run_cellranger_count {
         String cohort_name
         String zones = "us-central1-a"
     }
-    String gs_bucket_path= sub(output_gs_bucket_folder_path, "/+$", "") + "/" + cohort_name "/" + sample_name + "/GEX"  # remove the trailing slash and add the cohort name and sample name
+    String gs_bucket_path= sub(output_gs_bucket_folder_path, "/+$", "") + "/" + cohort_name + "/" + sample_name + "/GEX"  # remove the trailing slash and add the cohort name and sample name
 
     call cellranger_count {
         input:
