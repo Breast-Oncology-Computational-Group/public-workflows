@@ -73,3 +73,13 @@ workflows:
         affiliation: DFCI-BOC
     topic: SINGLECELL
     readMePath: /SINGLECELL/CellRanger/README.md
+
+  - name: CellRanger_arc_count
+    subclass: WDL
+    primaryDescriptorPath: /SINGLECELL/CellRanger/arc_count.wdl
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+    topic: SINGLECELL
+    readMePath: /SINGLECELL/CellRanger/README.md

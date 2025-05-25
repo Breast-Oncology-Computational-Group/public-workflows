@@ -1,0 +1,3 @@
+docker build -t cellranger-arc:2.0.2 .
+docker tag cellranger-arc:2.0.2 us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/cellranger-arc:2.0.2
+docker push us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/cellranger-arc:2.0.2
