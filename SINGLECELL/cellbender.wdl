@@ -10,20 +10,14 @@ workflow run_cellbender_remove_background {
         String output_directory
         String sample_id
         String cohort
-        File rna_count_raw_feature_h5
+        File raw_feature_h5
     }
     String output_directory_stripped = sub(output_directory, "/+$", "") +'/'+cohort +'/'+ sample_id
 
-    call extract_rna{
-      input:
-        rna_count_raw_feature_h5 = rna_count_raw_feature_h5
-    }
-
     call cellbender_remove_background_gpu {
         input:
-            rna_count_raw_feature_h5=extract_rna.rna_h5,
             output_directory = output_directory_stripped,
-            sample_name = Sample
+            sample_name = sample_id,
     }
    
     output {
@@ -31,7 +25,6 @@ workflow run_cellbender_remove_background {
       String cellbender_pdf = "~{output_directory_stripped}/cellbender.pdf"
       String cellbender_ckpt_file = "~{output_directory_stripped}/cellbender_ckpt.tar.gz"
       String cellbender_droplets_removed_h5 = "~{output_directory_stripped}/cellbender_filtered.h5" # containing only the droplets which were determined to have a > 50% posterior probability of containing cells.
-      String cellbender_original_h5 = "~{output_directory_stripped}/cellbender.h5" # Full count matrix as an h5 file, with background RNA removed. This file contains all the original droplet barcodes.
       String cellbender_report_html = "~{output_directory_stripped}/cellbender_report.html"
       String cellbender_metrics_csv = "~{output_directory_stripped}/cellbender_metrics.csv"
       String cellbender_version = cellbender_remove_background_gpu.version
@@ -39,40 +32,6 @@ workflow run_cellbender_remove_background {
 
 }
 
-task extract_rna {
-  input {
-    File rna_count_raw_feature_h5
-    String memory = "50G"
-    String run_docker = "jingxin/scpipe:v0"
-    String zones = "us-central1-a us-central1-b us-central1-c us-central1-f"
-    # Number of preemptible tries
-    Int preemptible = 1
-    Int cpu = 2
-    # Optional disk space needed
-    Int disk_space = 50
-  }
-  command {
-    python <<CODE
-    import scanpy as sc
-    adata = sc.read_10x_h5("~{rna_count_raw_feature_h5}",gex_only=True)
-    adata.write("rna.h5ad")
-    CODE
-  }
-
-  output {
-    File rna_h5='rna.h5ad'
-  }
-
-  runtime {
-    docker: "~{run_docker}"
-    zones: zones
-    memory: memory
-    bootDiskSizeGb: 12
-    disks: "local-disk ~{disk_space} HDD"
-    cpu: cpu
-    preemptible: preemptible
-  }
-}
 
 task cellbender_remove_background_gpu {
   input {
@@ -86,6 +45,7 @@ task cellbender_remove_background_gpu {
     # Docker image with CellBender
     String docker_image = "us.gcr.io/broad-dsde-methods/cellbender:0.3.0"
 
+    String? exclude_feature_types = "Peaks"
     File? checkpoint_file
     File? truth_file
     # Method configuration inputs
@@ -128,6 +88,7 @@ task cellbender_remove_background_gpu {
       --input "~{rna_count_raw_feature_h5}" \
       --output "~{sample_name}_out.h5" \
       --cuda \
+      ~{"--exclude-feature-types " + exclude_feature_types} \
       ~{"--checkpoint " + checkpoint_file} \
       ~{"--expected-cells " + expected_cells} \
       ~{"--total-droplets-included " + total_droplets_included} \
@@ -156,7 +117,6 @@ task cellbender_remove_background_gpu {
       gsutil -m cp ${sample_name}_out.log ${output_directory}/cellbender.log
       gsutil -m cp ${sample_name}_out.pdf ${output_directory}/cellbender.pdf
       gsutil -m cp ${sample_name}_out_filtered.h5 ${output_directory}/cellbender_filtered.h5
-      gsutil -m cp ${sample_name}_out.h5 ${output_directory}/cellbender.h5
       gsutil -m cp ckpt.tar.gz ${output_directory}/cellbender_ckpt.tar.gz
 
       gsutil -m cp ${sample_name}_out_report.html ${output_directory}/cellbender_report.html
@@ -166,7 +126,6 @@ task cellbender_remove_background_gpu {
   output {
     File log = "${sample_name}_out.log"
     File pdf = "${sample_name}_out.pdf"
-    File original_h5 = "${sample_name}_out.h5" # containing original droplets barcode
     File filtered_h5 = "${sample_name}_out_filtered.h5" # containing only the droplets which were determined to have a > 50% posterior probability of containing cells.
     File report_html= "${sample_name}_out_report.html"
     File metrics_csv= "${sample_name}_out_metrics.csv"
@@ -178,15 +137,15 @@ task cellbender_remove_background_gpu {
   }
 
   runtime {
-    docker: "${docker_image}"
+    docker: "~{docker_image}"
     bootDiskSizeGb: hardware_boot_disk_size_GB
-    disks: "local-disk ${hardware_disk_size_GB} HDD"
-    memory: "${hardware_memory_GB}G"
+    disks: "local-disk ~{hardware_disk_size_GB} HDD"
+    memory: "~{hardware_memory_GB}G"
     cpu: hardware_cpu_count
-    zones: "${hardware_zones}"
+    zones: "~{hardware_zones}"
     gpuCount: 1
-    gpuType: "${hardware_gpu_type}"
-    nvidiaDriverVersion: "${nvidia_driver_version}"
+    gpuType: "~{hardware_gpu_type}"
+    nvidiaDriverVersion: "~{nvidia_driver_version}"
     preemptible: hardware_preemptible_tries
     checkpointFile: "ckpt.tar.gz"
     maxRetries: 0
