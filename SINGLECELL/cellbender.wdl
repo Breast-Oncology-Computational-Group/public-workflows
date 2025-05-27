@@ -78,7 +78,7 @@ task cellbender_remove_background_gpu {
         Boolean? debug
 
         # Hardware-related inputs
-        String hardware_zones = "us-east1-d us-east1-c us-central1-a us-central1-c us-west1-b"
+        String hardware_zones = "us-central1-a"
         Int hardware_disk_size_GB = 50
         Int hardware_boot_disk_size_GB = 20
         Int hardware_preemptible_tries = 2
