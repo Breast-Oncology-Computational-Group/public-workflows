@@ -13,17 +13,21 @@ workflow run_cellbender_remove_background {
         String output_directory
         String sample_id
         String cohort
+        String zones = "us-central1-a"
     }
     String output_directory_stripped = sub(output_directory, "/+$", "") +'/'+cohort +'/'+ sample_id
 
     call cellbender_remove_background_gpu {
         input:
             sample_name = sample_id,
+            zones = zones,
     }
 
     call utils.sync_to_gcs as sync_to_gcs {
         input:
             transfer_files = cellbender_remove_background_gpu.transfer_files,
+            output_directory = output_directory_stripped,
+            zones = zones,
     }
 
     call cellranger_utils.format_cellranger_output as format_output {
@@ -37,6 +41,7 @@ workflow run_cellbender_remove_background {
     call cellranger_utils.updateOutputsInTerraTable  as update_outputs_in_terra_table {
         input:
             outputs_json = format_output.output_dict,
+            zones = zones,
     }
    
     output {

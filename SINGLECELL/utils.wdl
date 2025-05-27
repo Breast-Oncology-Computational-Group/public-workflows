@@ -4,7 +4,7 @@ task sync_to_gcs {
     input {
         Array[File] transfer_files
         String output_directory
-        String zone = "us-central1-a"
+        String zones = "us-central1-a"
         String docker_image = "jingxin/scpipe:v0"
         Int memoryGB = 1
         Int cpu = 1
@@ -19,7 +19,7 @@ task sync_to_gcs {
         File log = stdout()
     }
     runtime {
-        zone: "${zone}"
+        zones: "${zone}"
         docker: "${docker_image}"
         memory: "${memoryGB}G"
         cpu: "${cpu}"
