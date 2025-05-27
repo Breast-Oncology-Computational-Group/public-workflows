@@ -8,12 +8,14 @@ task sync_to_gcs {
         String docker_image = "jingxin/scpipe:v0"
         Int memoryGB = 1
         Int cpu = 1
-        Int diskGB = 50
+        Int diskGB = 20
     }
     command {
-        for file in ~{transfer_files}; do
-            gsutil cp $file ~{output_directory}
-        done
+        python <<CODE
+        import subprocess
+        for file in "${sep=',' transfer_files}".split(','):
+            subprocess.run("gsutil cp "+ file+ " ~{output_directory}",shell=True)
+        CODE
     }
     output {
         File log = stdout()
