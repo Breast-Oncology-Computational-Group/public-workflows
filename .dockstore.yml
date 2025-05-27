@@ -83,3 +83,13 @@ workflows:
         affiliation: DFCI-BOC
     topic: SINGLECELL
     readMePath: /SINGLECELL/CellRanger/README.md
+
+  - name: CellBender_remove_background
+    subclass: WDL
+    primaryDescriptorPath: /SINGLECELL/cellbender.wdl
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+    topic: SINGLECELL
+    readMePath: /SINGLECELL/cellbender.wdl
