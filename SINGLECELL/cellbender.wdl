@@ -236,7 +236,6 @@ task cellbender_remove_background_gpu {
     File report_html= "~{sample_name}_out_report.html"
     File metrics_csv= "${sample_name}_out_metrics.csv"
     # Array[File] h5_array = glob("${sample_name}_out*.h5")  # v2 creates a number of outputs depending on "fpr"
-    String output_dir = "${output_directory}/${sample_name}"
 
     File ckpt_file = "ckpt.tar.gz"
     String version = "${docker_image}"
