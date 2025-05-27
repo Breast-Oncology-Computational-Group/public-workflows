@@ -19,7 +19,7 @@ task sync_to_gcs {
         File log = stdout()
     }
     runtime {
-        zones: "${zone}"
+        zones: "${zones}"
         docker: "${docker_image}"
         memory: "${memoryGB}G"
         cpu: "${cpu}"
