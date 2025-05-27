@@ -20,7 +20,7 @@ workflow run_cellbender_remove_background {
     call cellbender_remove_background_gpu {
         input:
             sample_name = sample_id,
-            zones = zones,
+            hardware_zones = zones,
     }
 
     call utils.sync_to_gcs as sync_to_gcs {
