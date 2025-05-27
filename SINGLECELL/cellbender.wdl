@@ -15,7 +15,6 @@ workflow run_cellbender_remove_background {
 
     call cellbender_remove_background_gpu {
         input:
-            output_directory = output_directory_stripped,
             sample_name = sample_id,
     }
 
