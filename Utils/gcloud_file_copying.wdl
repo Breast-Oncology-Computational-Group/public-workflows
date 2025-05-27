@@ -11,7 +11,7 @@ task gcloud_file_copying {
     input {
         String source_file_path
         String destination_file_path
-        String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/terrautils:0.1"
+        String docker_image = "jingxin/scpipe:v0"
         Int memoryGB = 1
         Int cpu = 1
         Int diskGB = 1

@@ -18,6 +18,17 @@ workflow run_cellbender_remove_background {
             output_directory = output_directory_stripped,
             sample_name = sample_id,
     }
+
+    call sync_to_gcs {
+        input:
+            output_directory = output_directory_stripped,
+            cellbender_log = cellbender_remove_background_gpu.log,
+            cellbender_pdf = cellbender_remove_background_gpu.pdf,
+            cellbender_ckpt_file = cellbender_remove_background_gpu.ckpt_file,
+            cellbender_droplets_removed_h5 = cellbender_remove_background_gpu.filtered_h5,
+            cellbender_report_html = cellbender_remove_background_gpu.report_html,
+            cellbender_metrics_csv = cellbender_remove_background_gpu.metrics_csv,
+    }
    
     output {
       String cellbender_log = "~{output_directory_stripped}/cellbender.log"
@@ -31,6 +42,41 @@ workflow run_cellbender_remove_background {
 
 }
 
+task sync_to_gcs {
+    input {
+        String output_directory
+        String cellbender_log
+        String cellbender_pdf
+        String cellbender_ckpt_file
+        String cellbender_droplets_removed_h5
+        String cellbender_report_html
+        String cellbender_metrics_csv
+        String zone = "us-central1-a"
+        String docker_image = "jingxin/scpipe:v0"
+        Int memoryGB = 1
+        Int cpu = 1
+        Int diskGB = 50
+    }
+    command {
+        gsutil cp ~{cellbender_log} "~{output_directory}/cellbender.log"
+        gsutil cp ~{cellbender_pdf} "~{output_directory}/cellbender.pdf"
+        gsutil cp ~{cellbender_ckpt_file} "~{output_directory}/cellbender_ckpt.tar.gz"
+        gsutil cp ~{cellbender_droplets_removed_h5} "~{output_directory}/cellbender_filtered.h5"
+        gsutil cp ~{cellbender_report_html} "~{output_directory}/cellbender_report.html"
+        gsutil cp ~{cellbender_metrics_csv} "~{output_directory}/cellbender_metrics.csv"
+
+    }
+    output {
+        File log = stdout()
+    }
+    runtime {
+        zone: "${zone}"
+        docker: "${docker_image}"
+        memory: "${memoryGB}G"
+        cpu: "${cpu}"
+        disks: "local-disk " + diskGB + " HDD"
+    }
+}
 
 task cellbender_remove_background_gpu {
 
@@ -39,7 +85,6 @@ task cellbender_remove_background_gpu {
         # File-related inputs
         String sample_name
         File input_file_unfiltered  # all barcodes, raw data
-        String output_directory
         File? barcodes_file  # for MTX and NPZ formats, the bacode information is in a separate file
         File? genes_file  # for MTX and NPZ formats, the gene information is in a separate file
         File? checkpoint_file  # start from a saved checkpoint
@@ -183,15 +228,6 @@ task cellbender_remove_background_gpu {
             ~{true="--constant-learning-rate " false=" " constant_learning_rate} \
             ~{true="--debug " false=" " debug} \
             ~{"--truth " + truth_file}
-
-
-      gsutil cp "~{sample_name}_out.log" "~{output_directory}/cellbender.log"
-      gsutil cp "~{sample_name}_out.pdf" "~{output_directory}/cellbender.pdf"
-      gsutil cp "~{sample_name}_out_filtered.h5" "~{output_directory}/cellbender_filtered.h5"
-      gsutil cp "ckpt.tar.gz" "~{output_directory}/cellbender_ckpt.tar.gz"
-
-      gsutil cp "~{sample_name}_out_report.html" "~{output_directory}/cellbender_report.html"
-      gsutil cp "~{sample_name}_out_metrics.csv" "~{output_directory}/cellbender_metrics.csv"
   }
 
   output {
