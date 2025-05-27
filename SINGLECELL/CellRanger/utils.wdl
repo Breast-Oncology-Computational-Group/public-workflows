@@ -11,7 +11,7 @@ task format_cellranger_output {
         String docker_image = "jingxin/update_terra_table:0.1"
         Int cpu = 1
         Int memory_mb = 2000
-        Int disk_size_gb = 10
+        Int disk_size_gb = 50
     }
     command {
         python <<CODE
