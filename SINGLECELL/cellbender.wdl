@@ -33,6 +33,7 @@ workflow run_cellbender_remove_background {
     call cellranger_utils.format_cellranger_output as format_output {
         input:
             output_dir = cellbender_remove_background_gpu.transfer_files,
+            gs_bucket_path = output_directory_stripped,
             sample_id = sample_id,
             tr_prefix_name = "cellbender",
             zones = zones,
