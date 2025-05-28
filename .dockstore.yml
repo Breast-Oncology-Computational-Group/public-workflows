@@ -93,3 +93,13 @@ workflows:
         affiliation: DFCI-BOC
     topic: SINGLECELL
     readMePath: /SINGLECELL/cellbender.wdl
+
+  - name: GEX_CNV_Numbat
+    subclass: WDL
+    primaryDescriptorPath: /SINGLECELL/CNV/numbat.wdl
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+    topic: SINGLECELL
+    readMePath: /SINGLECELL/CNV/README.md
