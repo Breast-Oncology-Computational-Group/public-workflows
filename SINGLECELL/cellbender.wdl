@@ -1,81 +1,57 @@
 version 1.0
+import "utils.wdl" as utils
+import "CellRanger/utils.wdl" as cellranger_utils
 
 ## Copyright Broad Institute, 2022
 ##
 ## LICENSING :
 ## This script is released under the WDL source code license (BSD-3)
 ## (see LICENSE in https://github.com/openwdl/wdl).
+
 workflow run_cellbender_remove_background {
     input {
         String output_directory
         String sample_id
         String cohort
+        String zones = "us-central1-a"
     }
     String output_directory_stripped = sub(output_directory, "/+$", "") +'/'+cohort +'/'+ sample_id
 
     call cellbender_remove_background_gpu {
         input:
             sample_name = sample_id,
+            hardware_zones = zones,
     }
 
-    call sync_to_gcs {
+    call utils.sync_to_gcs as sync_to_gcs {
         input:
+            transfer_files = cellbender_remove_background_gpu.transfer_files,
             output_directory = output_directory_stripped,
-            cellbender_log = cellbender_remove_background_gpu.log,
-            cellbender_pdf = cellbender_remove_background_gpu.pdf,
-            cellbender_ckpt_file = cellbender_remove_background_gpu.ckpt_file,
-            cellbender_droplets_removed_h5 = cellbender_remove_background_gpu.filtered_h5,
-            cellbender_report_html = cellbender_remove_background_gpu.report_html,
-            cellbender_metrics_csv = cellbender_remove_background_gpu.metrics_csv,
+            zones = zones,
+    }
+
+    call cellranger_utils.format_cellranger_output as format_output {
+        input:
+            output_dir = cellbender_remove_background_gpu.transfer_files,
+            gs_bucket_path = output_directory_stripped,
+            sample_id = sample_id,
+            tr_prefix_name = "cellbender",
+            zones = zones,
+    }
+
+    call cellranger_utils.updateOutputsInTerraTable  as update_outputs_in_terra_table {
+        input:
+            outputs_json = format_output.output_dict,
+            zones = zones,
     }
    
     output {
-      String cellbender_log = "~{output_directory_stripped}/cellbender.log"
-      String cellbender_pdf = "~{output_directory_stripped}/cellbender.pdf"
-      String cellbender_ckpt_file = "~{output_directory_stripped}/cellbender_ckpt.tar.gz"
-      String cellbender_droplets_removed_h5 = "~{output_directory_stripped}/cellbender_filtered.h5" # containing only the droplets which were determined to have a > 50% posterior probability of containing cells.
-      String cellbender_report_html = "~{output_directory_stripped}/cellbender_report.html"
-      String cellbender_metrics_csv = "~{output_directory_stripped}/cellbender_metrics.csv"
       String cellbender_version = cellbender_remove_background_gpu.version
+      File cellbender_output_json = format_output.output_dict
     }
 
 }
 
-task sync_to_gcs {
-    input {
-        String output_directory
-        String cellbender_log
-        String cellbender_pdf
-        String cellbender_ckpt_file
-        String cellbender_droplets_removed_h5
-        String cellbender_report_html
-        String cellbender_metrics_csv
-        String zone = "us-central1-a"
-        String docker_image = "jingxin/scpipe:v0"
-        Int memoryGB = 1
-        Int cpu = 1
-        Int diskGB = 50
-    }
-    command {
-        gsutil cp ~{cellbender_log} "~{output_directory}/cellbender.log"
-        gsutil cp ~{cellbender_pdf} "~{output_directory}/cellbender.pdf"
-        gsutil cp ~{cellbender_ckpt_file} "~{output_directory}/cellbender_ckpt.tar.gz"
-        gsutil cp ~{cellbender_droplets_removed_h5} "~{output_directory}/cellbender_filtered.h5"
-        gsutil cp ~{cellbender_report_html} "~{output_directory}/cellbender_report.html"
-        gsutil cp ~{cellbender_metrics_csv} "~{output_directory}/cellbender_metrics.csv"
-
-    }
-    output {
-        File log = stdout()
-    }
-    runtime {
-        zone: "${zone}"
-        docker: "${docker_image}"
-        memory: "${memoryGB}G"
-        cpu: "${cpu}"
-        disks: "local-disk " + diskGB + " HDD"
-    }
-}
 
 task cellbender_remove_background_gpu {
 
@@ -227,17 +203,20 @@ task cellbender_remove_background_gpu {
             ~{true="--constant-learning-rate " false=" " constant_learning_rate} \
             ~{true="--debug " false=" " debug} \
             ~{"--truth " + truth_file}
+
+        # make folder to gsutil transfer
+        mkdir -p gs_transfer
+        mv ~{sample_name}_out.log gs_transfer/running.log
+        mv ~{sample_name}_out.pdf gs_transfer/report.pdf
+        mv ~{sample_name}_out_filtered.h5 gs_transfer/filtered.h5
+        mv ~{sample_name}_out_report.html gs_transfer/report.html
+        mv ~{sample_name}_out_metrics.csv gs_transfer/metrics.csv
+        mv ckpt.tar.gz gs_transfer/ckpt.tar.gz
+
   }
 
   output {
-    File log = "~{sample_name}_out.log"
-    File pdf = "~{sample_name}_out.pdf"
-    File filtered_h5 = "~{sample_name}_out_filtered.h5" # containing only the droplets which were determined to have a > 50% posterior probability of containing cells.
-    File report_html= "~{sample_name}_out_report.html"
-    File metrics_csv= "${sample_name}_out_metrics.csv"
-    # Array[File] h5_array = glob("${sample_name}_out*.h5")  # v2 creates a number of outputs depending on "fpr"
-
-    File ckpt_file = "ckpt.tar.gz"
+    Array[File] transfer_files = glob("gs_transfer/*")
     String version = "${docker_image}"
   }
 

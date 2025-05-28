@@ -54,6 +54,7 @@ task updateOutputsInTerraTable {
     Int cpu = 1
     Int memory_mb = 2000
     Int disk_size_gb = 10
+    String zones = "us-central1-a"
   }
 
   command <<<
@@ -65,6 +66,7 @@ task updateOutputsInTerraTable {
   >>>
 
   runtime {
+    zones: zones
     docker: docker_image
     cpu: cpu
     memory: "~{memory_mb} MiB"
