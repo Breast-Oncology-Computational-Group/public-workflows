@@ -4,6 +4,7 @@ import "utils.wdl" as utils
 workflow run_numbat {
     input {
         String sample_id
+        File gex_h5ad
         String zones = "us-central1-a"
         }
 
@@ -40,7 +41,6 @@ task preprare_allele_df {
         String docker_image = "pkharchenkolab/numbat-rbase:v1.4.2"
         Int memory = 10
         Int cpu = 8
-        Int ncores = 8
         Int disk = 50
     }
     command {
@@ -53,7 +53,7 @@ task preprare_allele_df {
         --gmap /Eagle_v2.4.1/tables/genetic_map_hg38_withX.txt.gz \
         --snpvcf /data/genome1K.phase3.SNP_AF5e2.chr1toX.hg38.vcf \
         --paneldir /data/1000G_hg38 \
-        --ncores "~{ncores}"
+        --ncores "~{cpu}"
     }
     output {
         File allele_df = "results/~{sample_id}_allele_counts.tsv.gz"
