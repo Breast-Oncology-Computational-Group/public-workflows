@@ -73,7 +73,7 @@ task numbat {
         File cell_type_annotation # must have three columns: barcode, cnv_celltype, CNV_Group
         String genome_build
         Boolean draw_plots = true
-        Float t = 1e-5
+        Float t = 0.00001
         # runtime
         Int ncores = 8
         String zones = "us-central1-a"
