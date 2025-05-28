@@ -29,12 +29,6 @@ workflow run_numbat {
     output {
         Array[File] numbat_results = numbat.numbat_results
     }
-
-    meta {
-        "author": "jingxin fu",
-        "email": "jingxin@broadinstitute.org",
-        "description": "Run Numbat to detect CNV"
-    }
 }
 
 task preprare_allele_df {
