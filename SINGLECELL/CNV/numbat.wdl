@@ -39,8 +39,9 @@ task preprare_allele_df {
         String zones = "us-central1-a"
         String docker_image = "pkharchenkolab/numbat-rbase:v1.4.2"
         Int memory = 10
-        Int cpu = 1
-        Int disk = 20
+        Int cpu = 8
+        Int ncores = 8
+        Int disk = 50
     }
     command {
     Rscript /numbat/inst/bin/pileup_and_phase.R \
