@@ -67,19 +67,21 @@ task preprare_allele_df {
 }
 
 task numbat {
-    File count_mtrx
-    File allele_df
-    File cell_type_annotation # must have three columns: barcode, cnv_celltype, CNV_Group
-    String genome_build
-    Boolean draw_plots = true
-    Int t = 1e-5
-    # runtime
-    Int ncores = 8
-    String zones = "us-central1-a"
-    String docker_image = "pkharchenkolab/numbat-rbase:v1.4.2"
-    Int memory = 10
-    Int cpu = 1
-    Int disk = 20
+    input {
+        File count_mtrx
+        File allele_df
+        File cell_type_annotation # must have three columns: barcode, cnv_celltype, CNV_Group
+        String genome_build
+        Boolean draw_plots = true
+        Int t = 1e-5
+        # runtime
+        Int ncores = 8
+        String zones = "us-central1-a"
+        String docker_image = "pkharchenkolab/numbat-rbase:v1.4.2"
+        Int memory = 10
+        Int cpu = 1
+        Int disk = 20
+    }
 
     command {
         R --no-save  <<RSCRIPT
