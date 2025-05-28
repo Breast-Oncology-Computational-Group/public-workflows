@@ -14,7 +14,7 @@ task sync_to_gcs {
         python <<CODE
         import subprocess
         for file in "${sep=',' transfer_files}".split(','):
-            subprocess.run("gsutil cp "+ file+ " ~{output_directory}",shell=True)
+            subprocess.run("gsutil cp "+ file+ " ~{output_directory}/",shell=True)
         CODE
     }
     output {
