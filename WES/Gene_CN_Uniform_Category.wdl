@@ -58,7 +58,7 @@ task cnv_uniform_category {
                           :]
         gene_cn = gene_cn[['sample','gene','Variant_Classification']]
         gene_cn.columns = ['sample','category','value']
-        gene_cn.drop_duplicates().to_csv('cnv_uniform_class.tsv', index=False)
+        gene_cn.drop_duplicates().to_csv('cnv_uniform_class.tsv', sep='\t', index=False)
         
         CODE
     }
