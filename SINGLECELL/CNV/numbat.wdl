@@ -38,9 +38,9 @@ task preprare_allele_df {
         String sample_id
         String zones = "us-central1-a"
         String docker_image = "pkharchenkolab/numbat-rbase:v1.4.2"
-        Int memory = 10
-        Int cpu = 8
-        Int disk = 50
+        Int memory = 128
+        Int cpu = 16
+        Int disk = 150
     }
     command {
     Rscript /numbat/inst/bin/pileup_and_phase.R \
@@ -78,9 +78,9 @@ task numbat {
         Int ncores = 8
         String zones = "us-central1-a"
         String docker_image = "pkharchenkolab/numbat-rbase:v1.4.2"
-        Int memory = 10
-        Int cpu = 1
-        Int disk = 20
+        Int memory = 128
+        Int cpu = 16
+        Int disk = 150
     }
 
     command {
