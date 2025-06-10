@@ -10,7 +10,7 @@ task h5ad_to_rds {
         Int disk = 20
     }
     command {
-        RSCRIPT <<RSCRIPT
+        R --no-save  <<RSCRIPT
         library(reticulate)
         ad <- import("anndata")
         data_ad <- ad$read_h5ad("~{h5ad}")
