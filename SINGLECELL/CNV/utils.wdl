@@ -10,7 +10,9 @@ task h5ad_to_rds {
         Int disk = 20
     }
     command <<<
+        # When using the triple angled brackets, variables within the command section are referenced with a tilde ~ instead of a dollar sign $
         set -e
+        
         R --no-save  <<RSCRIPT
         
         library(reticulate)
@@ -23,7 +25,9 @@ task h5ad_to_rds {
         exp.rawdata <- t(exp.rawdata)
         saveRDS(exp.rawdata, "count_mtrx.rds")
         saveRDS(obs, "metadata.rds")
+
         RSCRIPT
+
     >>>
 
     output {
