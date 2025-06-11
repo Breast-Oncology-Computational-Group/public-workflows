@@ -28,8 +28,8 @@ workflow run_numbat {
 
     output {
         # Array[File] numbat_results = numbat.numbat_results
-        File h5ad_to_rds = h5ad_to_rds.count_mtrx
-        File h5ad_to_rds = h5ad_to_rds.metadata
+        File count_mtrx = h5ad_to_rds.count_mtrx
+        File metadata = h5ad_to_rds.metadata
     }
 }
 
