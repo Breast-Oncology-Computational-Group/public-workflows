@@ -8,26 +8,28 @@ workflow run_numbat {
         String zones = "us-central1-a"
         }
 
-    call preprare_allele_df {
-        input:
-            sample_id = sample_id,
-            zones = zones,
-    }
+    # call preprare_allele_df {
+    #     input:
+    #         sample_id = sample_id,
+    #         zones = zones,
+    # }
     call utils.h5ad_to_rds as h5ad_to_rds {
         input:
             h5ad = gex_h5ad,
             zones = zones,
     }
-    call numbat {
-        input:
-            count_mtrx = h5ad_to_rds.count_mtrx,
-            cell_type_annotation = h5ad_to_rds.metadata,
-            allele_df = preprare_allele_df.allele_df,
-            zones = zones,
-    }
+    # call numbat {
+    #     input:
+    #         count_mtrx = h5ad_to_rds.count_mtrx,
+    #         cell_type_annotation = h5ad_to_rds.metadata,
+    #         allele_df = preprare_allele_df.allele_df,
+    #         zones = zones,
+    # }
 
     output {
-        Array[File] numbat_results = numbat.numbat_results
+        # Array[File] numbat_results = numbat.numbat_results
+        File h5ad_to_rds = h5ad_to_rds.count_mtrx
+        File h5ad_to_rds = h5ad_to_rds.metadata
     }
 }
 
