@@ -60,7 +60,7 @@ task preprare_allele_df {
     runtime {
         zones: "${zones}"
         docker: "${docker_image}"
-        memory: "${memory}G"
+        memory: "${memory}GB"
         cpu: "${cpu}"
         disks: "local-disk ${disk} HDD"
     }
@@ -83,7 +83,7 @@ task numbat {
         Int disk = 150
     }
 
-    command {
+    command <<<
         R --no-save  <<RSCRIPT
         library(numbat)
         count_mtrx = readRDS("~{count_mtrx}")
@@ -105,7 +105,7 @@ task numbat {
             out_dir = './results/'
         )
         RSCRIPT
-    }
+    >>>
 
     output {
         Array[File] numbat_results = glob("results/*")
@@ -114,7 +114,7 @@ task numbat {
     runtime {
         zones: "${zones}"
         docker: "${docker_image}"
-        memory: "${memory}G"
+        memory: "${memory}GB"
         cpu: "${cpu}"
         disks: "local-disk ${disk} HDD"
     }

@@ -9,8 +9,9 @@ task h5ad_to_rds {
         Int cpu = 1
         Int disk = 20
     }
-    command {
+    command <<< # When using the triple angled brackets, variables within the command section are referenced with a tilde ~ instead of a dollar sign $
         R --no-save  <<RSCRIPT
+        
         library(reticulate)
         ad <- import("anndata")
         data_ad <- ad$read_h5ad("~{h5ad}")
@@ -23,7 +24,8 @@ task h5ad_to_rds {
         saveRDS(obs, "metadata.rds")
 
         RSCRIPT
-    }
+    >>>
+
     output {
         File count_mtrx = "count_mtrx.rds"
         File metadata = "metadata.rds"
