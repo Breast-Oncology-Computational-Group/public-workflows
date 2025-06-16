@@ -36,6 +36,7 @@ workflow run_numbat {
 task preprare_allele_df {
     input {
         File bam_file
+        File bam_index_file
         File barcodes_file
         String sample_id
         String zones = "us-central1-a"
@@ -43,18 +44,26 @@ task preprare_allele_df {
         Int memory = 128
         Int cpu = 16
         Int disk = 150
-    }
+        Int preemptible = 2 
     command {
-    Rscript /numbat/inst/bin/pileup_and_phase.R \
-        --label "~{sample_id}" \
-        --samples "~{sample_id}" \
-        --bams "~{bam_file}" \
-        --barcodes "~{barcodes_file}" \
-        --outdir results \
-        --gmap /Eagle_v2.4.1/tables/genetic_map_hg38_withX.txt.gz \
-        --snpvcf /data/genome1K.phase3.SNP_AF5e2.chr1toX.hg38.vcf \
-        --paneldir /data/1000G_hg38 \
-        --ncores "~{cpu}"
+        set -e
+        # check if the barcodes file is a gz file, if so, unzip it, otherwise, move it to barcodes.tsv
+        if [[ "~{barcodes_file}" == *.gz ]]; then
+            gunzip -c ~{barcodes_file} > barcodes.tsv
+        else
+            mv ~{barcodes_file} barcodes.tsv
+        fi
+
+        Rscript /numbat/inst/bin/pileup_and_phase.R \
+            --label "~{sample_id}" \
+            --samples "~{sample_id}" \
+            --bams "~{bam_file}" \
+            --barcodes barcodes.tsv \
+            --outdir results \
+            --gmap /Eagle_v2.4.1/tables/genetic_map_hg38_withX.txt.gz \
+            --snpvcf /data/genome1K.phase3.SNP_AF5e2.chr1toX.hg38.vcf \
+            --paneldir /data/1000G_hg38 \
+            --ncores "~{cpu}"
     }
     output {
         File allele_df = "results/~{sample_id}_allele_counts.tsv.gz"
@@ -63,8 +72,10 @@ task preprare_allele_df {
         zones: "${zones}"
         docker: "${docker_image}"
         memory: "${memory}GB"
+        bootDiskSizeGb: 12
         cpu: "${cpu}"
         disks: "local-disk ${disk} HDD"
+        preemptible: preemptible
     }
 }
 
