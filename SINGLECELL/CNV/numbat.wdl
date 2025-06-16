@@ -45,6 +45,8 @@ task preprare_allele_df {
         Int cpu = 16
         Int disk = 150
         Int preemptible = 2 
+    }
+    
     command {
         set -e
         # check if the barcodes file is a gz file, if so, unzip it, otherwise, move it to barcodes.tsv
