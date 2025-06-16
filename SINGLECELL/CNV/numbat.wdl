@@ -8,11 +8,11 @@ workflow run_numbat {
         String zones = "us-central1-a"
         }
 
-    # call preprare_allele_df {
-    #     input:
-    #         sample_id = sample_id,
-    #         zones = zones,
-    # }
+    call preprare_allele_df {
+        input:
+            sample_id = sample_id,
+            zones = zones,
+    }
     call utils.h5ad_to_rds as h5ad_to_rds {
         input:
             h5ad = gex_h5ad,
@@ -29,6 +29,7 @@ workflow run_numbat {
     output {
         # Array[File] numbat_results = numbat.numbat_results
         File count_mtrx = h5ad_to_rds.count_mtrx
+        File allele_df = preprare_allele_df.allele_df
     }
 }
 
