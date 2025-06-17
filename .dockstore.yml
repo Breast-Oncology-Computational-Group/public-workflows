@@ -96,10 +96,10 @@ workflows:
 
   - name: GEX_CNV_Numbat
     subclass: WDL
-    primaryDescriptorPath: /SINGLECELL/CNV/numbat.wdl
+    primaryDescriptorPath: /SINGLECELL/CNV/Numbat/numbat.wdl
     authors:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
         affiliation: DFCI-BOC
     topic: SINGLECELL
-    readMePath: /SINGLECELL/CNV/README.md
+    readMePath: /SINGLECELL/CNV/Numbat/README.md

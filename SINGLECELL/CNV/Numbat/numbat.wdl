@@ -1,6 +1,6 @@
 version 1.0
 
-import "utils.wdl" as utils
+import "../utils.wdl" as utils
 workflow run_numbat {
     input {
         String sample_id
@@ -40,7 +40,7 @@ task preprare_allele_df {
         File barcodes_file
         String sample_id
         String zones = "us-central1-a"
-        String docker_image = "pkharchenkolab/numbat-rbase:v1.4.2"
+        String docker_image = "jingxin/numbat:v1.4.2"
         Int memory = 128
         Int cpu = 16
         Int disk = 150
@@ -48,7 +48,7 @@ task preprare_allele_df {
     }
     
     command {
-        set -e
+
         # check if the barcodes file is a gz file, if so, unzip it, otherwise, move it to barcodes.tsv
         if [[ "~{barcodes_file}" == *.gz ]]; then
             gunzip -c ~{barcodes_file} > barcodes.tsv
