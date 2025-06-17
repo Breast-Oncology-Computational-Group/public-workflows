@@ -40,14 +40,17 @@ task preprare_allele_df {
         File barcodes_file
         String sample_id
         String zones = "us-central1-a"
-        String docker_image = "jingxin/numbat:v1.4.2"
+        String docker_image = "pkharchenkolab/numbat-rbase:v1.4.2"
         Int memory = 128
         Int cpu = 16
         Int disk = 150
-        Int preemptible = 2 
+        Int preemptible = 2
     }
     
     command {
+        set -e
+
+        ulimit -s unlimited
 
         # check if the barcodes file is a gz file, if so, unzip it, otherwise, move it to barcodes.tsv
         if [[ "~{barcodes_file}" == *.gz ]]; then
