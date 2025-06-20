@@ -67,7 +67,7 @@ task run_infercnv {
         docker: docker
         memory: memory
         bootDiskSizeGb: 12
-        disks: "local-disk " + ceil(size(raw_counts_matrix, "GB")*2 + extra_disk_space) + " HDD"
+        disks: "local-disk " + ceil(size(raw_counts_rds, "GB")*2 + extra_disk_space) + " HDD"
         cpu: cpu
         preemptible: preemptible
         zones: zones
