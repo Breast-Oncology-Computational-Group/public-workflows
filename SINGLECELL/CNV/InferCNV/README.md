@@ -32,7 +32,7 @@ The following inputs are required for the `run_infercnv` task but are not expose
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `annotations_file_csv` | File | CSV file containing cell annotations with required columns: barcode, cnv_group, and cnv_celltype. The cnv_group column must contain at least two categories: "reference" and "case". Only cells from these two groups are included in the analysis. Reference group cells serve as the baseline for comparison, and their cnv_celltype values are used as reference group names. Important: ensure that case and reference cells do not share the same cnv_celltype categories to avoid conflicts in the analysis.|
+| `annotations_file_csv` | File | CSV file containing cell annotations with required columns: barcodes, cnv_group, and cnv_celltype. The cnv_group column must contain at least two categories: "reference" and "case". Only cells from these two groups are included in the analysis. Reference group cells serve as the baseline for comparison, and their cnv_celltype values are used as reference group names. Important: ensure that case and reference cells do not share the same cnv_celltype categories to avoid conflicts in the analysis.|
 | `gene_order_file` | File | File containing gene chromosomal positions and ordering |
 | `infercnv_Rscript` | File | R script for running InferCNV analysis |
 

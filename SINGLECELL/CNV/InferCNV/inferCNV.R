@@ -1001,10 +1001,10 @@ flog.info(paste("::Input arguments. End."))
 # read in the annotations file and the raw counts matrix
 # check if required columns are present
 annotations_file = read.csv(args$annotations_file)
-if (!all(c("barcode", "cnv_group", "cnv_celltype") %in% colnames(annotations_file))) {
-    stop("annotations_file must contain the columns 'barcode', 'cnv_group', and 'cnv_celltype'")
+if (!all(c("barcodes", "cnv_group", "cnv_celltype") %in% colnames(annotations_file))) {
+    stop("annotations_file must contain the columns 'barcodes', 'cnv_group', and 'cnv_celltype'")
 }
-included_barcodes = annotations_file$barcode[annotations_file$cnv_group %in% c('reference','case')]
+included_barcodes = annotations_file$barcodes[annotations_file$cnv_group %in% c('reference','case')]
 raw_counts_matrix <- readRDS(args$raw_counts_matrix)[,included_barcodes]
 annotations_file <- annotations_file[included_barcodes,]
 ref_group_names = unique(annotations_file$cnv_celltype[annotations_file$cnv_group == "reference"])
