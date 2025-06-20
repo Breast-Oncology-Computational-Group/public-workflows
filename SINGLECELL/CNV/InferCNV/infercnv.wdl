@@ -17,7 +17,6 @@ workflow infercnv {
     call run_infercnv {
         input:
             raw_counts_rds = h5ad_to_rds.raw_counts_rds,
-            gene_order_file = gene_order_file,
             zones = zones,
     }
 
