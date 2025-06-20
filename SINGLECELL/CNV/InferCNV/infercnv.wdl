@@ -16,7 +16,7 @@ workflow infercnv {
     }
     call run_infercnv {
         input:
-            raw_counts_rds = h5ad_to_rds.raw_counts_rds,
+            raw_counts_rds = h5ad_to_rds.count_mtrx,
             zones = zones,
     }
 
