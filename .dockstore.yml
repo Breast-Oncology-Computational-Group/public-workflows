@@ -103,3 +103,13 @@ workflows:
         affiliation: DFCI-BOC
     topic: SINGLECELL
     readMePath: /SINGLECELL/CNV/Numbat/README.md
+
+  - name: GEX_CNV_InferCNV
+    subclass: WDL
+    primaryDescriptorPath: /SINGLECELL/CNV/InferCNV/infercnv.wdl
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+    topic: SINGLECELL
+    readMePath: /SINGLECELL/CNV/InferCNV/README.md
