@@ -78,7 +78,7 @@ task preprare_allele_df {
         zones: "${zones}"
         docker: "${docker_image}"
         memory: "${memory}GB"
-        bootDiskSizeGb: "${bootDiskSizeGb}"
+        bootDiskSizeGb: ${bootDiskSizeGb}
         cpu: "${cpu}"
         disks: "local-disk ${disk} HDD"
         preemptible: preemptible
@@ -137,6 +137,6 @@ task numbat {
         memory: "${memory}GB"
         cpu: "${cpu}"
         disks: "local-disk ${disk} HDD"
-        bootDiskSizeGb: "${bootDiskSizeGb}"
+        bootDiskSizeGb: ${bootDiskSizeGb}
     }
 }
