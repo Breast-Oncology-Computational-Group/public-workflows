@@ -1,39 +1,41 @@
 version 1.0
 
-workflow infercnv {
-    call run_infercnv {}
+workflow scevan {
+    call run_scevan {}
 
     output {
-        File cnv_infercnv_h5 = run_infercnv.cnv_infercnv_h5
+        File cnv_scevan_h5 = run_scevan.cnv_h5
     }
 }
 
-task run_infercnv {
+task run_scevan {
     input {
         File h5
         File metadata_csv
         File params_table
-        File gene_order_file
-        File infercnv_Rscript
+        File scevan_Rscript
         String output_gs_bucket
-        String output_dir = "infercnv"
+        String output_dir = "scevan"
         String zones = "us-central1-a"
         Int cpu = 10
         String memory = "16G"
-        String docker = "jingxin/infercnv:latest" 
+        String docker = "jingxin/scevan:latest" 
         Int preemptible = 2
         Int extra_disk_space = 10
     }
 
     command {
         set -e
+        
+        ulimit -s unlimited
 
-        Rscript ~{infercnv_Rscript} ~{h5} ~{metadata_csv} ~{params_table} ~{output_dir} ~{gene_order_file}
+        Rscript ~{scevan_Rscript} ~{h5} ~{metadata_csv} ~{params_table} ~{output_dir}
+
         gsutil -m cp -r ~{output_dir} gs://~{output_gs_bucket}/~{output_dir}
     }
 
     output {
-        File cnv_infercnv_h5 = "~{output_dir}/cnv.h5"
+        File cnv_h5 = "~{output_dir}/cnv.h5"
     }
 
     runtime {
