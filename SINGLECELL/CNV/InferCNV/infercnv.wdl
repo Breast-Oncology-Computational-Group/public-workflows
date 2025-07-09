@@ -15,6 +15,8 @@ task run_infercnv {
         File params_table
         File infercnv_Rscript
         String output_gs_bucket
+        String cohort_name
+        String sample_name
         String output_dir = "infercnv"
         String zones = "us-central1-a"
         Int cpu = 10
@@ -23,12 +25,12 @@ task run_infercnv {
         Int preemptible = 2
         Int extra_disk_space = 10
     }
-
+    String gs_bucket_path= sub(output_gs_bucket, "/+$", "") + "/" + cohort_name + "/" + sample_name  # remove the trailing slash and add the cohort name and sample name
     command {
         set -e
 
         Rscript ~{infercnv_Rscript} ~{h5} ~{metadata_csv} ~{params_table} ~{output_dir}
-        gsutil -m cp -r ~{output_dir} gs://~{output_gs_bucket}/~{output_dir}
+        gsutil -m cp -r ~{output_dir} ~{gs_bucket_path}/~{output_dir}
     }
 
     output {
