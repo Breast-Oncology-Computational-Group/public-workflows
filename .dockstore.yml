@@ -9,6 +9,7 @@ workflows:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
         affiliation: DFCI-BOC
+        role: author
     topic: RNA-seq
     readMePath: /RNA/broadinstitute_TAG_public_TCap_v2_0_0_TCapRNAPipeline/README.md
  
@@ -21,6 +22,7 @@ workflows:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
         affiliation: DFCI-BOC
+        role: author
     topic: WES
     readMePath: /WES/LOH/README.md
 
@@ -31,6 +33,7 @@ workflows:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
         affiliation: DFCI-BOC
+        role: author
     topic: Utils
     readMePath: /Utils/README.md
 
@@ -41,6 +44,7 @@ workflows:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
         affiliation: DFCI-BOC
+        role: author
     topic: WES
     readMePath: /WES/README.md
 
@@ -51,6 +55,7 @@ workflows:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
         affiliation: DFCI-BOC
+        role: author
     topic: Utils
     readMePath: /Utils/README.md
 
@@ -61,6 +66,7 @@ workflows:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
         affiliation: DFCI-BOC
+        role: author
     topic: SINGLECELL
     readMePath: /SINGLECELL/CellRanger/README.md
 
@@ -71,6 +77,7 @@ workflows:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
         affiliation: DFCI-BOC
+        role: author
     topic: SINGLECELL
     readMePath: /SINGLECELL/CellRanger/README.md
 
@@ -81,6 +88,7 @@ workflows:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
         affiliation: DFCI-BOC
+        role: author
     topic: SINGLECELL
     readMePath: /SINGLECELL/CellRanger/README.md
 
@@ -91,6 +99,7 @@ workflows:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
         affiliation: DFCI-BOC
+        role: author
     topic: SINGLECELL
     readMePath: /SINGLECELL/cellbender.wdl
 
@@ -101,6 +110,7 @@ workflows:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
         affiliation: DFCI-BOC
+        role: author
     topic: SINGLECELL
     readMePath: /SINGLECELL/CNV/Numbat/README.md
 
@@ -111,5 +121,17 @@ workflows:
       - name: jingxin fu
         email: jingxin@broadinstitute.org
         affiliation: DFCI-BOC
+        role: author
     topic: SINGLECELL
     readMePath: /SINGLECELL/CNV/InferCNV/README.md
+
+  - name: GEX_CNV_SCEVAN
+    subclass: WDL
+    primaryDescriptorPath: /SINGLECELL/CNV/SCEVAN/scevan.wdl
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+        role: author
+    topic: SINGLECELL
+    readMePath: /SINGLECELL/CNV/SCEVAN/README.md

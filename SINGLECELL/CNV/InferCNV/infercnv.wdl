@@ -32,7 +32,7 @@ task run_infercnv {
     }
 
     output {
-        File cnv_infercnv_h5 = "~{output_dir}/cnv.h5"
+        File cnv_infercnv_h5 = "~{output_dir}/infercnv.h5"
     }
 
     runtime {

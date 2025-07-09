@@ -35,7 +35,7 @@ task run_scevan {
     }
 
     output {
-        File cnv_h5 = "~{output_dir}/cnv.h5"
+        File cnv_h5 = "~{output_dir}/scevan.h5"
     }
 
     runtime {
