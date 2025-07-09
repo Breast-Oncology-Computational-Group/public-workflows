@@ -2,14 +2,13 @@
 
 ## Overview
 
-The `infercnv.wdl` workflow performs Copy Number Variation (CNV) inference on single-cell RNA sequencing data using the InferCNV algorithm. This workflow processes gene expression data in H5AD format and generates CNV analysis outputs from InferCNV.
+The `infercnv.wdl` workflow performs Copy Number Variation (CNV) inference on single-cell RNA sequencing data using the InferCNV algorithm. This workflow processes gene expression data in H5 format and generates CNV analysis outputs from InferCNV.
 
 ## Workflow Description
 
-The workflow consists of two main steps:
+The workflow consists of a single main task:
 
-1. **Data Conversion**: Converts H5AD format gene expression data to RDS format using the `h5ad_to_rds` utility from the utils module
-2. **CNV Analysis**: Runs InferCNV analysis on the converted data to identify copy number variations
+1. **CNV Analysis**: Runs InferCNV analysis on H5 format gene expression data to identify copy number variations and outputs results to Google Cloud Storage
 
 ## Inputs
 
@@ -17,75 +16,59 @@ The workflow consists of two main steps:
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `gex_h5ad` | File | Gene expression data in H5AD format |
+| `h5` | File | Gene expression data in H5 format |
+| `metadata_csv` | File | CSV file containing cell metadata and annotations |
+| `params_table` | File | Parameters table for InferCNV analysis |
+| `gene_order_file` | File | File containing gene chromosomal positions and ordering |
+| `infercnv_Rscript` | File | R script for running InferCNV analysis |
+| `output_gs_bucket` | String | Google Cloud Storage bucket for output storage |
 
 ### Optional Inputs
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
+| `output_dir` | String | "infercnv" | Output directory name |
 | `zones` | String | "us-central1-a" | Google Cloud zones for computation |
+| `cpu` | Int | 10 | Number of CPU cores |
+| `memory` | String | "16G" | Memory allocation |
+| `docker` | String | "jingxin/infercnv:latest" | Docker image for execution |
 | `preemptible` | Int | 2 | Number of preemptible instances |
-
-### Required Task-Level Inputs
-
-The following inputs are required for the `run_infercnv` task but are not exposed at the workflow level. These need to be provided through the task configuration:
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `annotations_file_csv` | File | CSV file containing cell annotations with required columns: barcodes, cnv_group, and cnv_celltype. The cnv_group column must contain at least two categories: "reference" and "case". Only cells from these two groups are included in the analysis. Reference group cells serve as the baseline for comparison, and their cnv_celltype values are used as reference group names. Important: ensure that case and reference cells do not share the same cnv_celltype categories to avoid conflicts in the analysis.|
-| `gene_order_file` | File | File containing gene chromosomal positions and ordering |
-| `infercnv_Rscript` | File | R script for running InferCNV analysis |
+| `extra_disk_space` | Int | 10 | Additional disk space in GB |
 
 ## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
-| `infercnv_output` | File | Compressed tar.gz file containing all InferCNV analysis results |
+| `cnv_infercnv_h5` | File | H5 file containing CNV analysis results |
 
 ## Workflow Tasks
 
-### 1. h5ad_to_rds
+### run_infercnv
 
-**Purpose**: Converts H5AD format gene expression data to RDS format for R processing.
-
-**Inputs**:
-- `h5ad`: Input H5AD file
-- `zones`: Google Cloud zones (inherited from workflow)
-
-**Outputs**:
-- `raw_counts_rds`: RDS file containing raw count matrix
-- `metadata`: RDS file containing cell metadata
-
-**Runtime Configuration**:
-- Docker: `jingxin/omnicell:py311`
-- Memory: 10GB
-- CPU: 1
-- Disk: 20GB HDD
-
-### 2. run_infercnv
-
-**Purpose**: Performs CNV inference analysis using the InferCNV R package.
+**Purpose**: Performs CNV inference analysis using the InferCNV R package and uploads results to Google Cloud Storage.
 
 **Inputs**:
-- `raw_counts_rds`: Raw count matrix in RDS format (from h5ad_to_rds task)
-- `annotations_file_csv`: CSV file containing cell annotations/clusters
+- `h5`: Gene expression data in H5 format
+- `metadata_csv`: CSV file containing cell metadata and annotations
+- `params_table`: Parameters table for InferCNV analysis
 - `gene_order_file`: File containing gene chromosomal positions
 - `infercnv_Rscript`: R script for running InferCNV analysis
-- `additional_args`: Additional command-line arguments for InferCNV (optional)
-- `zones`: Google Cloud zones
-- `cpu`: Number of CPU cores (default: 1)
-- `memory`: Memory allocation (default: 12GB)
-- `docker`: Docker image (default: trinityctat/infercnv:latest)
+- `output_gs_bucket`: Google Cloud Storage bucket for output storage
+- `output_dir`: Output directory name (default: "infercnv")
+- `zones`: Google Cloud zones (default: "us-central1-a")
+- `cpu`: Number of CPU cores (default: 10)
+- `memory`: Memory allocation (default: "16G")
+- `docker`: Docker image (default: "jingxin/infercnv:latest")
 - `preemptible`: Number of preemptible instances (default: 2)
 - `extra_disk_space`: Additional disk space in GB (default: 10)
 
 **Outputs**:
-- `infercnv_full_outputs`: Compressed tar.gz file containing all analysis results
+- `cnv_infercnv_h5`: H5 file containing CNV analysis results
 
 **Runtime Configuration**:
-- Docker: `trinityctat/infercnv:latest`
-- Memory: 12GB (configurable)
-- CPU: 1 (configurable)
+- Docker: `jingxin/infercnv:latest`
+- Memory: 16GB (configurable)
+- CPU: 10 cores (configurable)
 - Boot Disk: 12GB
 - Data Disk: Calculated based on input size × 2 + extra space
 - Preemptible: 2 instances (configurable)
@@ -103,7 +86,12 @@ java -jar cromwell.jar run infercnv.wdl \
 
 ```json
 {
-  "infercnv.gex_h5ad": "gs://bucket/path/to/expression_data.h5ad",
+  "infercnv.h5": "gs://bucket/path/to/expression_data.h5",
+  "infercnv.metadata_csv": "gs://bucket/path/to/metadata.csv",
+  "infercnv.params_table": "gs://bucket/path/to/params_table.csv",
+  "infercnv.gene_order_file": "gs://bucket/path/to/gene_order.txt",
+  "infercnv.infercnv_Rscript": "gs://bucket/path/to/infercnv.R",
+  "infercnv.output_gs_bucket": "my-output-bucket",
   "infercnv.zones": "us-central1-a",
   "infercnv.preemptible": 2
 }
@@ -113,32 +101,41 @@ java -jar cromwell.jar run infercnv.wdl \
 
 ```json
 {
-  "infercnv.gex_h5ad": "gs://bucket/path/to/expression_data.h5ad",
+  "infercnv.h5": "gs://bucket/path/to/expression_data.h5",
+  "infercnv.metadata_csv": "gs://bucket/path/to/metadata.csv",
+  "infercnv.params_table": "gs://bucket/path/to/params_table.csv",
+  "infercnv.gene_order_file": "gs://bucket/path/to/gene_order.txt",
+  "infercnv.infercnv_Rscript": "gs://bucket/path/to/infercnv.R",
+  "infercnv.output_gs_bucket": "my-output-bucket",
   "infercnv.zones": "us-central1-a",
+  "infercnv.cpu": 16,
+  "infercnv.memory": "32G",
   "infercnv.preemptible": 2,
-  "infercnv.run_infercnv.cpu": 4,
-  "infercnv.run_infercnv.memory": "24G",
-  "infercnv.run_infercnv.additional_args": "--cutoff=0.1 --smooth_method=pyramidinal"
+  "infercnv.extra_disk_space": 20
 }
 ```
 
 ## Input File Requirements
 
-### H5AD File Format
-The input H5AD file should contain:
-- Raw count matrix in the `X` layer or as the main matrix
-- Cell metadata with cluster/annotation information
-- Gene information with chromosomal positions
+### H5 File Format
+The input H5 file should contain:
+- Gene expression data in a format compatible with the InferCNV R script
+- Cell and gene identifiers
 
-### Annotations File (CSV)
-The annotations file should contain:
-- Cell identifiers matching those in the H5AD file
-- Cluster/group assignments for each cell
-- Optional: additional metadata columns
+### Metadata CSV File
+The metadata CSV file should contain:
+- Cell identifiers matching those in the H5 file
+- Cell annotations and cluster assignments
+- Any additional metadata required for the analysis
+
+### Parameters Table
+The parameters table should contain:
+- Configuration parameters for the InferCNV analysis
+- Analysis-specific settings and thresholds
 
 ### Gene Order File
 The gene order file should contain:
-- Gene identifiers matching those in the H5AD file
+- Gene identifiers matching those in the H5 file
 - Chromosomal positions (chromosome, start, end)
 - Gene ordering information
 
@@ -146,25 +143,19 @@ The gene order file should contain:
 
 ### External Dependencies
 - **Cromwell**: Workflow execution engine
-- **Google Cloud Platform**: For computation resources
+- **Google Cloud Platform**: For computation resources and storage
 - **Docker**: Container runtime
 
 ### Software Dependencies
-- **OmniCell-utils**: For H5AD to RDS conversion (imported from utils.wdl)
 - **InferCNV R package**: For CNV analysis
 - **R**: Statistical computing environment
+- **gsutil**: For Google Cloud Storage operations
 
 ## Output Structure
 
-The workflow produces a compressed tar.gz file containing the InferCNV analysis results, which typically includes:
-
-- **infercnv.observations.txt**: Processed expression data
-- **infercnv.references.txt**: Reference expression profiles
-- **infercnv.infercnv_obj**: R object with analysis results
-- **HMM_CNV_predictions.*.txt**: HMM-based CNV predictions
-- **CNV_predictions.*.txt**: CNV prediction files
-- **plots/**: Directory containing visualization plots
-- **run.final.infercnv_obj**: Final analysis object
+The workflow produces:
+- **cnv.h5**: H5 file containing CNV analysis results
+- **Output directory**: Uploaded to the specified Google Cloud Storage bucket containing all InferCNV analysis results
 
 ## Troubleshooting
 
@@ -173,15 +164,18 @@ The workflow produces a compressed tar.gz file containing the InferCNV analysis 
 1. **Memory Errors**: Increase the `memory` parameter if encountering out-of-memory errors
 2. **Disk Space**: Adjust `extra_disk_space` if the workflow fails due to insufficient disk space
 3. **Timeout Issues**: Consider using more CPU cores or adjusting the `preemptible` setting
+4. **GCS Upload Issues**: Ensure the `output_gs_bucket` is accessible and has appropriate permissions
 
 ### Performance Optimization
 
 - For large datasets, increase `cpu` and `memory` parameters
 - Use multiple preemptible instances for cost optimization
 - Consider using different zones for better resource availability
+- Adjust `extra_disk_space` based on expected output size
 
 ## Version Information
 
 - **Workflow Version**: 1.0
-- **InferCNV Version**: Latest (trinityctat/infercnv:latest)
-- **OmniCell Version**: py311 (jingxin/omnicell:py311)
+- **Docker Image**: jingxin/infercnv:latest
+- **Default CPU**: 10 cores
+- **Default Memory**: 16GB
