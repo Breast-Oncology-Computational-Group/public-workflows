@@ -13,7 +13,6 @@ task run_infercnv {
         File h5
         File metadata_csv
         File params_table
-        File gene_order_file
         File infercnv_Rscript
         String output_gs_bucket
         String output_dir = "infercnv"
@@ -28,7 +27,7 @@ task run_infercnv {
     command {
         set -e
 
-        Rscript ~{infercnv_Rscript} ~{h5} ~{metadata_csv} ~{params_table} ~{output_dir} ~{gene_order_file}
+        Rscript ~{infercnv_Rscript} ~{h5} ~{metadata_csv} ~{params_table} ~{output_dir}
         gsutil -m cp -r ~{output_dir} gs://~{output_gs_bucket}/~{output_dir}
     }
 

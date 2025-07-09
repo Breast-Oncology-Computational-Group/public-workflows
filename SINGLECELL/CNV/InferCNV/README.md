@@ -19,7 +19,6 @@ The workflow consists of a single main task:
 | `h5` | File | Gene expression data in H5 format |
 | `metadata_csv` | File | CSV file containing cell metadata and annotations |
 | `params_table` | File | Parameters table for InferCNV analysis |
-| `gene_order_file` | File | File containing gene chromosomal positions and ordering |
 | `infercnv_Rscript` | File | R script for running InferCNV analysis |
 | `output_gs_bucket` | String | Google Cloud Storage bucket for output storage |
 
@@ -51,7 +50,6 @@ The workflow consists of a single main task:
 - `h5`: Gene expression data in H5 format
 - `metadata_csv`: CSV file containing cell metadata and annotations
 - `params_table`: Parameters table for InferCNV analysis
-- `gene_order_file`: File containing gene chromosomal positions
 - `infercnv_Rscript`: R script for running InferCNV analysis
 - `output_gs_bucket`: Google Cloud Storage bucket for output storage
 - `output_dir`: Output directory name (default: "infercnv")
@@ -89,7 +87,6 @@ java -jar cromwell.jar run infercnv.wdl \
   "infercnv.h5": "gs://bucket/path/to/expression_data.h5",
   "infercnv.metadata_csv": "gs://bucket/path/to/metadata.csv",
   "infercnv.params_table": "gs://bucket/path/to/params_table.csv",
-  "infercnv.gene_order_file": "gs://bucket/path/to/gene_order.txt",
   "infercnv.infercnv_Rscript": "gs://bucket/path/to/infercnv.R",
   "infercnv.output_gs_bucket": "my-output-bucket",
   "infercnv.zones": "us-central1-a",
@@ -104,7 +101,6 @@ java -jar cromwell.jar run infercnv.wdl \
   "infercnv.h5": "gs://bucket/path/to/expression_data.h5",
   "infercnv.metadata_csv": "gs://bucket/path/to/metadata.csv",
   "infercnv.params_table": "gs://bucket/path/to/params_table.csv",
-  "infercnv.gene_order_file": "gs://bucket/path/to/gene_order.txt",
   "infercnv.infercnv_Rscript": "gs://bucket/path/to/infercnv.R",
   "infercnv.output_gs_bucket": "my-output-bucket",
   "infercnv.zones": "us-central1-a",
@@ -133,11 +129,11 @@ The parameters table should contain:
 - Configuration parameters for the InferCNV analysis
 - Analysis-specific settings and thresholds
 
-### Gene Order File
-The gene order file should contain:
-- Gene identifiers matching those in the H5 file
-- Chromosomal positions (chromosome, start, end)
-- Gene ordering information
+### R Script
+The InferCNV R script should:
+- Accept command line arguments for input files and output directory
+- Implement the InferCNV analysis pipeline
+- Generate the output H5 file in the specified output directory
 
 ## Dependencies
 
