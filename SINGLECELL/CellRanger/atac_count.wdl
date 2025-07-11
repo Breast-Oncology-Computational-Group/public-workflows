@@ -75,7 +75,7 @@ task cellranger_atac_count {
         # run cellranger count  
         python <<CODE
         import subprocess
-        cmd =  "cellranger-atac count --id=sample --reference=reference_dir --fastqs=fastq_dir --sample=~{sample_name} --chemistry=~{chemistry}"
+        cmd =  "cellranger-atac count --id=~{sample_name} --reference=reference_dir --fastqs=fastq_dir --sample=~{sample_name} --chemistry=~{chemistry}"
 
         if '~{force_cells}' != '':
             cmd += " --force-cells=~{force_cells}"
@@ -90,10 +90,10 @@ task cellranger_atac_count {
 
         CODE
 
-        gsutil -q -m rsync -d -r sample/outs ~{gs_bucket_path}
+        gsutil -q -m rsync -d -r ~{sample_name}/outs ~{gs_bucket_path}
     }
     output {
-        Array[File] output_dir = glob("sample/outs/*")
+        Array[File] output_dir = glob("~{sample_name}/outs/*")
     }
     runtime {
         docker: docker_image

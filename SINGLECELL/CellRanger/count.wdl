@@ -77,7 +77,7 @@ task cellranger_count {
         # run cellranger count  
         python <<CODE
         import subprocess
-        cmd =  "cellranger count --id=sample --transcriptome=reference_dir --fastqs=fastq_dir --sample=~{sample_name} --chemistry=~{chemistry}"
+        cmd =  "cellranger count --id=~{sample_name} --transcriptome=reference_dir --fastqs=fastq_dir --sample=~{sample_name} --chemistry=~{chemistry}"
 
         if '~{include_introns}' == 'true':
             cmd += " --include-introns=true"
@@ -103,10 +103,10 @@ task cellranger_count {
 
         CODE
 
-        gsutil -q -m rsync -d -r sample/outs ~{gs_bucket_path}
+        gsutil -q -m rsync -d -r ~{sample_name}/outs ~{gs_bucket_path}
     }
     output {
-        Array[File] output_dir = glob("sample/outs/*")
+        Array[File] output_dir = glob("~{sample_name}/outs/*")
     }
     runtime {
         docker: docker_image

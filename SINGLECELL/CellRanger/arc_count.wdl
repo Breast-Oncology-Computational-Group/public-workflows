@@ -87,7 +87,7 @@ task cellranger_arc_count {
             f.write(os.path.abspath('atac_fastq_dir')+',~{sample_name},Chromatin Accessibility\n')
 
         import subprocess
-        cmd =  "cellranger-arc count --id=sample --reference=reference_dir --libraries=libraries.csv"
+        cmd =  "cellranger-arc count --id=~{sample_name} --reference=reference_dir --libraries=libraries.csv"
 
         if '~{gex_exclude_introns}' == 'true':
             cmd += " --gex-exclude-introns"
@@ -108,10 +108,10 @@ task cellranger_arc_count {
 
         CODE
 
-        gsutil -q -m rsync -d -r sample/outs ~{gs_bucket_path}
+        gsutil -q -m rsync -d -r ~{sample_name}/outs ~{gs_bucket_path}
     }
     output {
-        Array[File] output_dir = glob("sample/outs/*")
+        Array[File] output_dir = glob("~{sample_name}/outs/*")
     }
     runtime {
         docker: docker_image
