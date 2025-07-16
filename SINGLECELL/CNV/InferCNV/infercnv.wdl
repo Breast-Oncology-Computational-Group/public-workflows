@@ -30,7 +30,7 @@ task run_infercnv {
         set -e
 
         Rscript ~{infercnv_Rscript} ~{h5} ~{metadata_csv} ~{params_table} ~{output_dir}
-        gsutil -m cp -r ~{output_dir} ~{gs_bucket_path}/~{output_dir}
+        gsutil -m cp -r ~{output_dir} ~{gs_bucket_path}/
     }
 
     output {

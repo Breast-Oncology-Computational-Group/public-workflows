@@ -34,7 +34,7 @@ task run_scevan {
 
         Rscript ~{scevan_Rscript} ~{h5} ~{metadata_csv} ~{params_table} ~{output_dir}
 
-        gsutil -m cp -r ~{output_dir} ~{gs_bucket_path}/~{output_dir}
+        gsutil -m cp -r ~{output_dir} ~{gs_bucket_path}/
     }
 
     output {
