@@ -18,11 +18,12 @@ task tar_unzip {
   Int preemptible = 1
 
   command {
-    if ~{input_file}.endswith(".tar"):
-        tar -xf ~{input_file} -C output_dir
-    elif ~{input_file}.endswith(".zip"):
-        unzip ~{input_file} -d output_dir
-    else:
+    set -e
+    if [[ "~{input_file}" == *.tar ]]; then
+        tar -xf "~{input_file}" -C output_dir
+    elif [[ "~{input_file}" == *.zip ]]; then
+        unzip "~{input_file}" -d output_dir
+    else 
         echo "Unsupported file type: ~{input_file}"
         exit 1
     fi
