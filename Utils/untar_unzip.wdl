@@ -8,15 +8,16 @@ workflow untar_unzip {
 }
 
 task tar_unzip {
-  File input_file
-  String output_dir
-  String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/terrautils:0.1"
-  Int memory = 4
-  Int cpu = 2
-  Int bootDiskSizeGb = 10
-  Int nonBootDiskSizeGb = 50
-  Int preemptible = 1
-
+  input {
+    File input_file
+    String output_dir
+    String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/terrautils:0.1"
+    Int memory = 4
+    Int cpu = 2
+    Int bootDiskSizeGb = 10
+    Int nonBootDiskSizeGb = 50
+    Int preemptible = 1
+  }
   command {
     set -e
     python <<CODE
