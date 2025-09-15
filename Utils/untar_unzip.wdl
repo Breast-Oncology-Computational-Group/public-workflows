@@ -19,14 +19,17 @@ task tar_unzip {
 
   command {
     set -e
-    if [[ ~{input_file} == *.tar ]]; then
-        tar -xf "~{input_file}" -C output_dir
-    elif [[ ~{input_file} == *.zip ]]; then
-        unzip ~{input_file} -d output_dir
-    else 
-        echo "Unsupported file type: ~{input_file}"
+    python <<CODE
+    import os
+    import subprocess
+    if "~{input_file}".endswith(".tar"):
+        subprocess.run(f"tar -xf {input_file} -C output_dir", shell=True)
+    elif "~{input_file}".endswith(".zip"):
+        subprocess.run(f"unzip {input_file} -d output_dir", shell=True)
+    else:
+        print("Unsupported file type: ~{input_file}")
         exit 1
-    fi
+    CODE
     gsutil -m rsync -r output_dir ~{output_dir}
   }
 
