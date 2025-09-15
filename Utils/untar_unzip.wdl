@@ -30,8 +30,7 @@ task tar_unzip {
         subprocess.run('unzip ~{input_file} -d output_dir', shell=True)
         print('Extracted zip file: ~{input_file}')
     else:
-        print('Unsupported file type: ~{input_file}')
-        exit(1)
+        raise ValueError('Unsupported file type: ~{input_file}')
     CODE
     gsutil -m rsync -r output_dir ~{output_dir}
   }
