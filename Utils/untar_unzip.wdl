@@ -5,7 +5,9 @@ workflow untar_unzip {
   String output_dir
 
   call tar_unzip {
-    input: input_file = input_file, output_dir = output_dir
+    input: 
+    input_file = input_file,
+    output_dir = output_dir
   }
 }
 
