@@ -1,3 +1,5 @@
+version 1.0
+
 workflow untar_unzip {
   File input_file
   String output_dir
