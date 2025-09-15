@@ -1,13 +1,9 @@
 version 1.0
 
 workflow untar_unzip {
-  File input_file
-  String output_dir
-
-  call tar_unzip {
-    input: 
-    input_file = input_file,
-    output_dir = output_dir
+  call tar_unzip {}
+  output {
+    File log = tar_unzip.log
   }
 }
 
