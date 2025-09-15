@@ -22,10 +22,10 @@ task tar_unzip {
     python <<CODE
     import os
     import subprocess
-    if '~{input_file}'.endswith('.tar'):
+    if '~{input_file}'.endswith("tar"):
         subprocess.run('tar -xf ~{input_file} -C output_dir', shell=True)
         print('Extracted tar file: ~{input_file}')
-    elif '~{input_file}'.endswith('.zip'):
+    elif '~{input_file}'.endswith("zip"):
         subprocess.run('unzip ~{input_file} -d output_dir', shell=True)
         print('Extracted zip file: ~{input_file}')
     else:
