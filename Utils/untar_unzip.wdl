@@ -31,7 +31,7 @@ task tar_unzip {
         print('Extracted zip file: ~{input_file}')
     else:
         print('Unsupported file type: ~{input_file}')
-        exit 1
+        exit(1)
     CODE
     gsutil -m rsync -r output_dir ~{output_dir}
   }
