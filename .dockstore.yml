@@ -135,3 +135,14 @@ workflows:
         role: author
     topic: SINGLECELL
     readMePath: /SINGLECELL/CNV/SCEVAN/README.md
+  
+  - name: Untar_Unzip
+    subclass: WDL
+    primaryDescriptorPath: /Utils/untar_unzip.wdl
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+        role: author
+    topic: Utils
+    readMePath: /Utils/README.md

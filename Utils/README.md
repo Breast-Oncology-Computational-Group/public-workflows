@@ -51,3 +51,31 @@ The workflow uses the `gsutil cp` command to copy files between Google Cloud Sto
 ### Docker Requirements
 
 This workflow uses the Docker image: `us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/terrautils:0.1`
+
+
+## untar_unzip
+
+The `untar_unzip` workflow extracts a `.tar` or `.zip` archive and syncs the extracted contents to a specified Google Cloud Storage directory.
+
+### Inputs
+
+- `input_file`: Archive file to extract (`.tar` or `.zip`), typically in GCS
+- `output_dir`: Destination GCS directory where extracted contents will be synced
+
+### Outputs
+
+- Writes extracted files to the specified `output_dir` in GCS
+- No formal WDL outputs at the workflow level
+
+### Implementation Details
+
+The workflow:
+1. Detects archive type by file extension
+2. Uses `tar -xf` for `.tar` or `unzip` for `.zip`
+3. Extracts into a local working directory
+4. Syncs the extracted contents to `output_dir` using `gsutil -m rsync -r`
+5. Exits with an error for unsupported file types
+
+### Docker Requirements
+
+This workflow uses the Docker image: `us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/terrautils:0.1`
