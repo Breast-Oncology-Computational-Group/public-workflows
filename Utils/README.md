@@ -78,4 +78,4 @@ The workflow:
 
 ### Docker Requirements
 
-This workflow uses the Docker image: `us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/terrautils:0.1`
+This workflow uses the Docker image: `jingxin/scpipe:v0`

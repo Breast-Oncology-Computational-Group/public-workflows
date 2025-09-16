@@ -11,7 +11,7 @@ task tar_unzip {
   input {
     File input_file
     String output_dir
-    String docker_image = "us-central1-docker.pkg.dev/dfciboc-storage-images/dfci-boc/terrautils:0.1"
+    String docker_image = "jingxin/scpipe:v0"
     Int memory = 4
     Int cpu = 2
     Int bootDiskSizeGb = 10
@@ -23,6 +23,7 @@ task tar_unzip {
     python <<CODE
     import os
     import subprocess
+    os.makedirs('output_dir', exist_ok=True)
     if '~{input_file}'.endswith("tar"):
         subprocess.run('tar -xf ~{input_file} -C output_dir', shell=True)
         print('Extracted tar file: ~{input_file}')
