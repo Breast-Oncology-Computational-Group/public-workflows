@@ -25,10 +25,10 @@ task tar_unzip {
     import subprocess
     os.makedirs('output_dir', exist_ok=True)
     if '~{input_file}'.endswith("tar"):
-        subprocess.run('tar -xf ~{input_file} -C output_dir', shell=True)
+        subprocess.run('tar -xf ~{input_file} -C output_dir --strip-components=1', shell=True)
         print('Extracted tar file: ~{input_file}')
     elif '~{input_file}'.endswith("zip"):
-        subprocess.run('unzip ~{input_file} -d output_dir', shell=True)
+        subprocess.run('unzip -j ~{input_file} -d output_dir', shell=True)
         print('Extracted zip file: ~{input_file}')
     else:
         raise ValueError('Unsupported file type: ~{input_file}')
