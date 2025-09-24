@@ -146,3 +146,14 @@ workflows:
         role: author
     topic: Utils
     readMePath: /Utils/README.md
+
+  - name: SpaceRanger
+    subclass: WDL
+    primaryDescriptorPath: /SINGLECELL/SpaceRanger/spaceranger_workflow.wdl
+    authors:
+      - name: jingxin fu
+        email: jingxin@broadinstitute.org
+        affiliation: DFCI-BOC
+        role: author
+    topic: SINGLECELL
+    readMePath: /SINGLECELL/SpaceRanger/README.md
