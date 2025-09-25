@@ -218,7 +218,6 @@ task run_spaceranger_count {
                 call_args = ['strato', 'sync', '~{input_fastqs_directories}' + '/~{sample_id}', '~{sample_id}']
                 print(' '.join(call_args))
                 check_call(call_args)
-                fastqs.append('~{sample_id}')
             except CalledProcessError:
                 if not os.path.exists('~{sample_id}'):
                     os.mkdir('~{sample_id}')
