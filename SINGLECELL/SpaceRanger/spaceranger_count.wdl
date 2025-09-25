@@ -273,10 +273,8 @@ task run_spaceranger_count {
             call_args.append('--colorizedimage=~{colorizedimage}')
 
         if '~{area}' == '' and '~{slide}' == '':
-            if '~{unknown_slide}' == '':
-                print("Please provide an input for the 'unknown_slide' argument, choosing from 'visium-1', 'visium-2', and 'visium-2-large'!", file = sys.stderr)
-                sys.exit(1)
-            call_args.append('--unknown-slide=~{unknown_slide}')
+            if '~{unknown_slide}' != '':
+                call_args.append('--unknown-slide=~{unknown_slide}')
         else:
             if '~{area}' == '':
                 print("Please provide an input for the 'area' argument!", file = sys.stderr)
