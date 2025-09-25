@@ -192,22 +192,39 @@ task run_spaceranger_count {
         from packaging import version
 
         fastqs = []
-        for i, directory in enumerate('~{input_fastqs_directories}'.split(',')):
-            directory = re.sub('/+$', '', directory) # remove trailing slashes
-            target = '~{sample_id}' + "_" + str(i)
+        n_fastqs = len('~{input_fastqs_directories}'.split(','))
+        if n_fastqs > 1:
+            for i, directory in enumerate('~{input_fastqs_directories}'.split(',')):
+                directory = re.sub('/+$', '', directory) # remove trailing slashes
+                target = '~{sample_id}' + "_" + str(i)
+                try:
+                    call_args = ['strato', 'exists', directory + '/~{sample_id}/']
+                    print(' '.join(call_args))
+                    check_call(call_args, stdout=DEVNULL, stderr=STDOUT)
+                    call_args = ['strato', 'sync', directory + '/~{sample_id}', target]
+                    print(' '.join(call_args))
+                    check_call(call_args)
+                except CalledProcessError:
+                    if not os.path.exists(target):
+                        os.mkdir(target)
+                    call_args = ['strato', 'cp', directory + '/~{sample_id}' + '_S*_L*_*_001.fastq.gz' , target]
+                    check_call(call_args)
+                fastqs.append('~{sample_id}_' + str(i))
+        else: # fix issue for single fastq directory
             try:
-                call_args = ['strato', 'exists', directory + '/~{sample_id}/']
+                call_args = ['strato', 'exists', '~{input_fastqs_directories}' + '/~{sample_id}/']
                 print(' '.join(call_args))
                 check_call(call_args, stdout=DEVNULL, stderr=STDOUT)
-                call_args = ['strato', 'sync', directory + '/~{sample_id}', target]
+                call_args = ['strato', 'sync', '~{input_fastqs_directories}' + '/~{sample_id}', '~{sample_id}']
                 print(' '.join(call_args))
                 check_call(call_args)
+                fastqs.append('~{sample_id}')
             except CalledProcessError:
-                if not os.path.exists(target):
-                    os.mkdir(target)
-                call_args = ['strato', 'cp', directory + '/~{sample_id}' + '_S*_L*_*_001.fastq.gz' , target]
+                if not os.path.exists('~{sample_id}'):
+                    os.mkdir('~{sample_id}')
+                call_args = ['strato', 'cp', '~{input_fastqs_directories}' + '/~{sample_id}' + '_S*_L*_*_001.fastq.gz' , '~{sample_id}']
                 check_call(call_args)
-            fastqs.append('~{sample_id}_' + str(i))
+            fastqs.append('~{sample_id}')
 
         call_args = ['spaceranger', 'count', '--id=results', '--transcriptome=genome_dir', '--fastqs=' + ','.join(fastqs), '--sample=~{sample_id}', '--jobmode=local', '--localcores=~{num_cpu}']
 
