@@ -13,7 +13,7 @@ def extract_loh(gene_cn_file):
     df = df.with_columns(
         pl.when(pl.col("LOH")==0).then(pl.lit('N')
         ).otherwise(
-            pl.when((pl.col("expected.a1").round(0)==0) & (pl.col("corrected_total_cn").round(0)==1)).then(pl.lit('CL-LOH'))
+            pl.when((pl.col("expected.a1").round(0)==0) & (pl.col("corrected_total_cn").round(0)==1)).then(pl.lit('CL-LOH')) ## MSKCC Het Loss
             .when((pl.col("expected.a1").round(0)==0) & (pl.col("corrected_total_cn").round(0)==2)).then(pl.lit('CN-LOH'))
             .when((pl.col("expected.a1").round(0)==0) & (pl.col("corrected_total_cn").round(0)>2)).then(pl.lit('LOH(Other)'))
         ).alias("LOH_type")

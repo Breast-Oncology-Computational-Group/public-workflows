@@ -12,6 +12,16 @@ The workflow identifies and classifies LOH events into the following categories:
 
 3. **LOH (Other)**: Other forms of loss of heterozygosity that don't fall into the above categories, such as total copy number larger than 2 and come from the same parent.
 
+## HetLoss Column (MSK-style RB1 LOH separation)
+
+The CL-LOH follows the MSK cohort definition:
+
+1. **Het Loss**: heterozygous loss, defined as a state with total copy number of one and lesser copy number of zero (TCN = 1 & LCN = 0).
+
+
+
+Here LCN is taken from `expected.a1` (the lesser copy number) and TCN from `corrected_total_cn`.
+
 ## Usage
 
 The workflow takes a gene-annotated copy number segment file as input and produces a tab-separated output file containing identified LOH events with their classifications.
